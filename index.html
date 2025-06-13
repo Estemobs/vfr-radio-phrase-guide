@@ -110,7 +110,7 @@
 
 <form id="vfrForm" onsubmit="generatePhrases(event)">
   <label for="callsign" data-fr="Callsign (optionnel)" data-en="Callsign (optional)">Callsign (optionnel)</label>
-  <input type="text" id="callsign" name="callsign" placeholder="Ex: Victor Juliet Zero Five" />
+  <input type="text" id="callsign" name="callsign" placeholder="Ex: VJ05" />
 
   <label for="departure" data-fr="Départ (nom de l'aéroport)" data-en="Departure (airport name)">Départ (nom de l'aéroport)</label>
   <input type="text" id="departure" name="departure" required placeholder="Ex: Paris Charles-de-Gaulle" />
@@ -324,6 +324,27 @@ const facultatifPhrases = {
   ]
 };
 
+// Table de conversion OTAN
+const NATO_PHONETIC = {
+  A: "Alpha",   B: "Bravo",    C: "Charlie", D: "Delta",   E: "Echo",
+  F: "Foxtrot", G: "Golf",     H: "Hotel",   I: "India",   J: "Juliett",
+  K: "Kilo",    L: "Lima",     M: "Mike",    N: "November",O: "Oscar",
+  P: "Papa",    Q: "Quebec",   R: "Romeo",   S: "Sierra",  T: "Tango",
+  U: "Uniform", V: "Victor",   W: "Whiskey", X: "X-ray",   Y: "Yankee",
+  Z: "Zulu",
+  0: "Zero",    1: "One",      2: "Two",     3: "Three",   4: "Four",
+  5: "Five",    6: "Six",      7: "Seven",   8: "Eight",   9: "Nine",
+  "-": "Dash",  " ": " "
+};
+
+function toNatoPhonetic(str) {
+  return str
+    .toUpperCase()
+    .split("")
+    .map(char => NATO_PHONETIC[char] || char)
+    .join(" ");
+}
+
 function setSiteLang(lang) {
   siteLang = lang;
   document.getElementById('site-fr').classList.toggle('active', lang === 'fr');
@@ -366,6 +387,8 @@ function generatePhrases(event) {
 
   let callsign = document.getElementById("callsign").value.trim();
   if (!callsign) callsign = "Victor Juliet Zero Five";
+  else callsign = toNatoPhonetic(callsign);
+
   const depName = document.getElementById("departure").value.trim();
   const arrName = document.getElementById("arrival").value.trim();
   const r = document.getElementById("runway").value.trim();
