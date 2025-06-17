@@ -118,8 +118,11 @@
   <label for="arrival" data-fr="Arrivée (nom de l'aéroport)" data-en="Arrival (airport name)">Arrivée (nom de l'aéroport)</label>
   <input type="text" id="arrival" name="arrival" required placeholder="Ex: Paris Orly" />
 
-  <label for="runway" data-fr="Piste" data-en="Runway">Piste</label>
-  <input type="text" id="runway" name="runway" required placeholder="Ex: 27" />
+  <label for="runwayDep" data-fr="Piste départ" data-en="Departure runway">Piste départ</label>
+  <input type="text" id="runwayDep" name="runwayDep" required placeholder="Ex: 27" />
+
+  <label for="runwayArr" data-fr="Piste arrivée" data-en="Arrival runway">Piste arrivée</label>
+  <input type="text" id="runwayArr" name="runwayArr" required placeholder="Ex: 09" />
 
   <label for="degree" data-fr="Cap (degré)" data-en="Heading (degree)">Cap (degré)</label>
   <input type="number" id="degree" name="degree" required placeholder="Ex: 045" min="0" max="359" />
@@ -217,36 +220,36 @@ const steps = {
 
 const phrases = {
   fr: [
-    (dep, arr, r, alt, deg, lr, parking, callsign) => "",
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Mise en route au parking, VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Roulage vers la piste ${r}, VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Remontée piste ${r}, trafic ${dep}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Décollage piste ${r}, trafic ${dep}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => "",
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Sortie de la zone, trafic ${dep}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">${alt ? alt + " pieds, " : ""}VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => "",
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">10 nautiques au ${deg}° du terrain, intégration pour atterrissage piste ${r}, trafic ${arr}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${r}, trafic ${arr}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Base piste ${r}, trafic ${arr}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Finale piste ${r}, trafic ${arr}, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Piste dégagée, roulage vers parking${parking ? " " + parking : ""}, trafic ${arr}, ${callsign}.</span>`
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Mise en route au parking, VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Roulage vers la piste ${rDep}, VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Remontée piste ${rDep}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Décollage piste ${rDep}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Sortie de la zone, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">${alt ? alt + " pieds, " : ""}VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">10 nautiques au ${deg}° du terrain, intégration pour atterrissage piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Base piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Finale piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Piste dégagée, roulage vers parking${parking ? " " + parking : ""}, trafic ${arr}, ${callsign}.</span>`
   ],
   en: [
-    (dep, arr, r, alt, deg, lr, parking, callsign) => "",
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Engine start at the ramp, VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Taxiing to runway ${r}, VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Backtracking runway ${r}, ${dep} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Taking off runway ${r}, ${dep} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => "",
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Leaving the area, ${dep} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">${alt ? alt + " feet, " : ""}VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => "",
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">10 miles ${deg}° of the field, inbound for landing, runway ${r}, ${arr} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Entering ${lr} downwind runway ${r}, ${arr} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Turning base runway ${r}, ${arr} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Final runway ${r}, ${arr} traffic, ${callsign}.</span>`,
-    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Clear of runway ${r}, taxiing to parking${parking ? " at " + parking : ""}, ${arr} traffic, ${callsign}.</span>`
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Engine start at the ramp, VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Taxiing to runway ${rDep}, VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Backtracking runway ${rDep}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Taking off runway ${rDep}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Leaving the area, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">${alt ? alt + " feet, " : ""}VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">10 miles ${deg}° of the field, inbound for landing, runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Entering ${lr} downwind runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Turning base runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Final runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Clear of runway ${rArr}, taxiing to parking${parking ? " at " + parking : ""}, ${arr} traffic, ${callsign}.</span>`
   ]
 };
 
@@ -337,7 +340,8 @@ function setSiteLang(lang) {
   // Placeholders
   document.getElementById('departure').placeholder = lang === 'fr' ? "Ex: Paris Charles-de-Gaulle" : "Ex: Paris Charles-de-Gaulle";
   document.getElementById('arrival').placeholder = lang === 'fr' ? "Ex: Paris Orly" : "Ex: Paris Orly";
-  document.getElementById('runway').placeholder = lang === 'fr' ? "Ex: 27" : "Ex: 27";
+  document.getElementById('runwayDep').placeholder = lang === 'fr' ? "Ex: 27" : "Ex: 27";
+  document.getElementById('runwayArr').placeholder = lang === 'fr' ? "Ex: 09" : "Ex: 09";
   document.getElementById('degree').placeholder = lang === 'fr' ? "Ex: 045" : "Ex: 045";
   document.getElementById('altitude').placeholder = lang === 'fr' ? "Ex: 3500" : "Ex: 3500";
   document.getElementById('parking').placeholder = lang === 'fr' ? "Ex: G23" : "Ex: G23";
@@ -368,7 +372,8 @@ function generatePhrases(event) {
   if (!callsign) callsign = "Victor Juliet Zero Five";
   const depName = document.getElementById("departure").value.trim();
   const arrName = document.getElementById("arrival").value.trim();
-  const r = document.getElementById("runway").value.trim();
+  const rDep = document.getElementById("runwayDep").value.trim();
+  const rArr = document.getElementById("runwayArr").value.trim();
   const alt = document.getElementById("altitude").value.trim();
   const deg = document.getElementById("degree").value.trim();
   const lr = document.getElementById("leftRight").value;
@@ -380,15 +385,13 @@ function generatePhrases(event) {
 
   let html = "";
   for(let i=0; i<phraseList.length; i++) {
-    // Affiche le titre d'étape (gras, noir) sans menu déroulant
     if (stepList[i]) {
       if (i === 0) html += stepList[i](depName);
       else if (i === 5) html += stepList[i]();
       else if (i === 8) html += stepList[i](arrName);
     }
-    // Explication + phrase dans un menu déroulant
     if (!stepList[i]) {
-      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, r, alt, deg, lr, parking, callsign)}</details>`;
+      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign)}</details>`;
     }
   }
 
@@ -397,7 +400,7 @@ function generatePhrases(event) {
   const facultatifList = facultatifPhrases[commLang];
   const facultatifExplain = facultatifExplanations[siteLang];
   for(let i=0; i<facultatifList.length; i++) {
-    html += `<details><summary>${facultatifExplain[i]}</summary>${facultatifList[i](depName, arrName, r, alt, deg, lr, parking, callsign)}</details>`;
+    html += `<details><summary>${facultatifExplain[i]}</summary>${facultatifList[i](depName, arrName, rDep, alt, deg, lr, parking, callsign)}</details>`;
   }
 
   document.getElementById("output").innerHTML = html;
