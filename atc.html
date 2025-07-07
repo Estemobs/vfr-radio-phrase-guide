@@ -372,12 +372,6 @@
     <option value="right" data-fr="Right" data-en="Right">Right</option>
   </select>
 
-  <label for="parkingDep" data-fr="Place de parking au départ (obligatoire)" data-en="Departure parking spot (required)">Place de parking au départ (obligatoire)</label>
-  <input type="text" id="parkingDep" name="parkingDep" required placeholder="Ex: A12, Terminal 2" />
-
-  <label for="atisInfo" data-fr="Information ATIS (obligatoire)" data-en="ATIS Information (required)">Information ATIS (obligatoire)</label>
-  <input type="text" id="atisInfo" name="atisInfo" required placeholder="Ex: Information Alpha, Bravo, Charlie..." />
-
   <label for="parking" data-fr="Place de parking à l'arrivée - optionnel" data-en="Arrival parking spot - optional">Place de parking à l'arrivée - optionnel</label>
   <input type="text" id="parking" name="parking" placeholder="Ex: G23 (laissez vide si inconnu)" />
 
@@ -1019,11 +1013,7 @@ function generatePhrases(event) {
   const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
 
-  // Validation des champs obligatoires
-  if (!callsign) {
-    alert(siteLang === 'fr' ? 'Le callsign est obligatoire.' : 'Callsign is required.');
-    return;
-  }
+  // Validation des champs obligatoires UNIQUEMENT
   if (!depName) {
     alert(siteLang === 'fr' ? 'L\'aéroport de départ est obligatoire.' : 'Departure airport is required.');
     return;
@@ -1048,10 +1038,8 @@ function generatePhrases(event) {
     alert(siteLang === 'fr' ? 'La piste d\'arrivée est obligatoire.' : 'Arrival runway is required.');
     return;
   }
-  if (!alt) {
-    alert(siteLang === 'fr' ? 'L\'altitude est obligatoire.' : 'Altitude is required.');
-    return;
-  }
+  
+  // Le callsign et l'altitude sont OPTIONNELS - pas de validation
 
   const key = `${flightType}_${chartsStatus}`;
   const phraseList = phrases[commLang];
