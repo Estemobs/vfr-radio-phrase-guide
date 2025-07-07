@@ -458,12 +458,6 @@ const explanations = {
       "Test radio.",
       "Demande de répétition (Say again).",
       "Demande de parler plus lentement.",
-      "Confirmation de réception d'instructions.",
-      "Report de position en route.",
-      "Demande de vecteur radar.",
-      "Ident transpondeur.",
-      "Changement de fréquence.",
-      "Demande d'urgence priorité.",
       "PAN PAN (urgence non vitale).",
       "MAYDAY (urgence vitale)."
     ],
@@ -490,12 +484,6 @@ const explanations = {
       "Test radio.",
       "Demande de répétition (Say again).",
       "Demande de parler plus lentement.",
-      "Confirmation de réception d'instructions.",
-      "Report de position avec demande guidage.",
-      "Demande vecteur radar.",
-      "Ident transpondeur.",
-      "Changement de fréquence.",
-      "Demande d'urgence priorité.",
       "PAN PAN (urgence non vitale).",
       "MAYDAY (urgence vitale)."
     ],
@@ -522,12 +510,6 @@ const explanations = {
       "Test radio.",
       "Demande de répétition (Say again).",
       "Demande de parler plus lentement.",
-      "Confirmation de réception d'instructions.",
-      "Report obligatoire de position IFR.",
-      "Demande vecteur radar IFR.",
-      "Ident transpondeur.",
-      "Changement de fréquence.",
-      "Demande d'urgence priorité.",
       "PAN PAN (urgence non vitale).",
       "MAYDAY (urgence vitale)."
     ],
@@ -554,12 +536,6 @@ const explanations = {
       "Test radio.",
       "Demande de répétition (Say again).",
       "Demande de parler plus lentement.",
-      "Confirmation de réception d'instructions.",
-      "Report position avec demande vecteurs.",
-      "Demande vecteur radar.",
-      "Ident transpondeur.",
-      "Changement de fréquence.",
-      "Demande d'urgence priorité.",
       "PAN PAN (urgence non vitale).",
       "MAYDAY (urgence vitale)."
     ]
@@ -588,12 +564,6 @@ const explanations = {
       "Radio check.",
       "Request for repetition (Say again).",
       "Request to speak slower.",
-      "Confirmation of received instructions.",
-      "Position report enroute.",
-      "Request for radar vector.",
-      "Transponder ident.",
-      "Frequency change.",
-      "Request for emergency priority.",
       "PAN PAN (non-vital emergency).",
       "MAYDAY (vital emergency)."
     ],
@@ -620,12 +590,6 @@ const explanations = {
       "Radio check.",
       "Request for repetition (Say again).",
       "Request to speak slower.",
-      "Confirmation of received instructions.",
-      "Position report with guidance request.",
-      "Request radar vector.",
-      "Transponder ident.",
-      "Frequency change.",
-      "Request for emergency priority.",
       "PAN PAN (non-vital emergency).",
       "MAYDAY (vital emergency)."
     ],
@@ -685,12 +649,6 @@ const explanations = {
       "Radio check.",
       "Request for repetition (Say again).",
       "Request to speak slower.",
-      "Confirmation of received instructions.",
-      "Position report requesting vectors.",
-      "Request radar vector.",
-      "Transponder ident.",
-      "Frequency change.",
-      "Request for emergency priority.",
       "PAN PAN (non-vital emergency).",
       "MAYDAY (vital emergency)."
     ]
@@ -785,15 +743,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, test radio, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Say again please, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Speak slower please, ${callsign || "Victor Juliet Zero Five"}.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Roger, message reçu, ${callsign || "Victor Juliet Zero Five"}.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = formatAltitude(alt, altType, 'fr') || "niveau actuel";
-      return `<span class="phrase">Centre, position [position], ${altText}, estimé ${arr} dans [temps], ${callsign || "Victor Juliet Zero Five"}.</span>`;
-    },
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Approche ${arr}, demande vecteur radar pour l'approche, ${callsign || "Victor Juliet Zero Five"}.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Ident, ${callsign || "Victor Juliet Zero Five"}.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Changement fréquence [fréquence], au revoir, ${callsign || "Victor Juliet Zero Five"}.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, demande priorité pour [raison], ${callsign || "Victor Juliet Zero Five"}.</span>`,
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, [nature du problème], position [position], demande assistance, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, [urgence vitale], position [position], [nombre de personnes] personnes à bord, ${callsign || "Victor Juliet Zero Five"}.</span>`
   ],
@@ -881,15 +830,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, radio check.</span>`,
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message received.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = formatAltitude(alt, altType, 'en') || "current level";
-      return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, position [position], ${altText}, estimating ${arr} in [time].</span>`;
-    },
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request radar vector for approach.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ident.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, frequency change to [frequency], good day.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, request priority for [reason].</span>`,
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature of problem], position [position], request assistance.</span>`,
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [vital emergency], position [position], [number] souls on board.</span>`
   ]
@@ -904,9 +844,9 @@ const stepTitles = {
     () => `<div class="step-title">🛬 Arrivée</div>`,
     null, null, null, null, null,
     () => `<div class="step-title">📞 Communications générales</div>`,
-    null, null, null, null, null, null, null,
+    null, null,
     () => `<div class="step-title">🚨 Urgences</div>`,
-    null, null
+    null
   ],
   en: [
     () => `<div class="step-title">🛫 Departure</div>`,
@@ -916,9 +856,9 @@ const stepTitles = {
     () => `<div class="step-title">🛬 Arrival</div>`,
     null, null, null, null, null,
     () => `<div class="step-title">📞 General communications</div>`,
-    null, null, null, null, null, null, null,
+    null, null,
     () => `<div class="step-title">🚨 Emergencies</div>`,
-    null, null
+    null
   ]
 };
 
