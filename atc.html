@@ -129,6 +129,19 @@
     margin-bottom: 20px;
     color: #0c5460;
   }
+  .alt-type-btn {
+    background: #fce8e6;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .alt-type-btn.active {
+    background: #dc3545;
+    color: #fff;
+  }
 </style>
 </head>
 <body>
@@ -184,11 +197,19 @@
   <label for="runwayArr" data-fr="Piste arrivée" data-en="Arrival runway">Piste arrivée</label>
   <input type="text" id="runwayArr" name="runwayArr" required placeholder="Ex: 09" />
 
-  <label for="degree" data-fr="Cap (degré)" data-en="Heading (degree)">Cap (degré)</label>
-  <input type="number" id="degree" name="degree" required placeholder="Ex: 045" min="0" max="359" />
+  <label for="degree" data-fr="Cap (degré) - optionnel" data-en="Heading (degree) - optional">Cap (degré) - optionnel</label>
+  <input type="number" id="degree" name="degree" placeholder="Ex: 045 (laissez vide si inconnu)" min="0" max="359" />
 
-  <label for="altitude" data-fr="Altitude (pieds)" data-en="Altitude (feet)">Altitude (pieds)</label>
-  <input type="number" id="altitude" name="altitude" placeholder="Ex: 3500" />
+  <label for="altitude" data-fr="Altitude (pieds) - optionnel" data-en="Altitude (feet) - optional">Altitude (pieds) - optionnel</label>
+  <input type="number" id="altitude" name="altitude" placeholder="Ex: 3500 (laissez vide si inconnue)" />
+
+  <div>
+    <label data-fr="Type d'altitude" data-en="Altitude type">Type d'altitude</label>
+    <div style="display: flex; gap: 10px; margin-top: 5px;">
+      <button type="button" id="alt-type-feet" class="alt-type-btn active" onclick="setAltitudeType('feet')" data-fr="Altitude (pieds)" data-en="Altitude (feet)">Altitude (pieds)</button>
+      <button type="button" id="alt-type-fl" class="alt-type-btn" onclick="setAltitudeType('fl')" data-fr="Flight Level" data-en="Flight Level">Flight Level</button>
+    </div>
+  </div>
 
   <label for="leftRight" data-fr="Left or Right (downwind)" data-en="Left or Right (downwind)">Left or Right (downwind)</label>
   <select id="leftRight" name="leftRight" required>
@@ -196,8 +217,8 @@
     <option value="right" data-fr="Right" data-en="Right">Right</option>
   </select>
 
-  <label for="parking" data-fr="Place de parking à l'arrivée" data-en="Arrival parking spot">Place de parking à l'arrivée</label>
-  <input type="text" id="parking" name="parking" placeholder="Ex: G23" />
+  <label for="parking" data-fr="Place de parking à l'arrivée - optionnel" data-en="Arrival parking spot - optional">Place de parking à l'arrivée - optionnel</label>
+  <input type="text" id="parking" name="parking" placeholder="Ex: G23 (laissez vide si inconnu)" />
 
   <label for="squawk" data-fr="Code transpondeur (si connu)" data-en="Squawk code (if known)">Code transpondeur (si connu)</label>
   <input type="text" id="squawk" name="squawk" placeholder="Ex: 1200" maxlength="4" />
@@ -212,6 +233,7 @@ let siteLang = 'fr';
 let commLang = 'en';
 let flightType = 'ifr';
 let chartsStatus = 'outdated';
+let altitudeType = 'feet';
 
 const infoTexts = {
   fr: {
@@ -453,58 +475,167 @@ const explanations = {
 
 const phrases = {
   fr: [
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, VFR au parking [position], destination ${arr}, demande autorisation de départ.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, autorisé VFR vers ${arr}, ${alt ? alt + " pieds" : "niveau demandé"}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour décollage immédiat piste ${rDep}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, décollé piste ${rDep}, montée ${alt ? alt + " pieds" : "niveau autorisé"}, VFR vers ${arr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande montée ${alt ? alt + " pieds" : "niveau supérieur"}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, niveau ${alt ? alt + " pieds" : "niveau actuel"}, VFR de ${dep} vers ${arr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande cap ${deg}° direct au lieu du point de navigation.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, ${alt ? alt + " pieds" : "niveau actuel"}, [position], demande approche VFR ${arr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, demande approche directe piste ${rArr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${rArr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, base piste ${rArr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, finale piste ${rArr}, demande clearance atterrissage.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, piste ${rArr} dégagée, demande roulage parking${parking ? " " + parking : ""}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, test radio.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message reçu.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, position [position], ${alt ? alt + " pieds" : "niveau actuel"}, estimé ${arr} dans [temps].</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, demande vecteur radar pour l'approche.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ident.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, changement fréquence [fréquence], au revoir.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande priorité pour [raison].</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature du problème], position [position], demande assistance.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [urgence vitale], position [position], [nombre de personnes] personnes à bord.</span>`
+    // Contact initial départ
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, ${flightType.toUpperCase()} au parking [position], destination ${arr}, demande autorisation de départ.`;
+      if (chartsStatus === 'outdated') base += ` Attention : cartes non à jour.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Réponse autorisation
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau demandé";
+      let base = `${callsign || "Victor Juliet Zero Five"}, autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Demande roulage
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}.`;
+      if (flightType === 'ifr') base += ` Plan de vol IFR activé.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Prêt décollage
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour décollage immédiat piste ${rDep}.</span>`,
+    // Contact départ
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau autorisé";
+      let base = `Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, décollé piste ${rDep}, montée ${altText}, ${flightType.toUpperCase()} vers ${arr}.`;
+      if (chartsStatus === 'outdated' && flightType === 'ifr') base += ` URGENT : cartes non à jour, demande vecteurs radar.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Demande changement altitude
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let reqText = alt ? "montée " + (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "assignation d'altitude";
+      return `<span class="phrase">Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande ${reqText}.</span>`;
+    },
+    // Contact centre
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
+      let base = `Centre, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} de ${dep} vers ${arr}.`;
+      if (chartsStatus === 'outdated') base += ` Cartes non à jour, demande vecteurs.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Demande cap direct
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let capText = deg ? "cap " + deg + "° direct" : "cap direct";
+      let reason = chartsStatus === 'outdated' ? " (cartes non à jour)" : " au lieu du point de navigation";
+      return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande ${capText}${reason}.</span>`;
+    },
+    // Contact approche
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
+      let base = `Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, ${altText}, [position], demande approche ${flightType.toUpperCase()} ${arr}.`;
+      if (chartsStatus === 'outdated') base += ` Cartes obsolètes, demande guidage complet.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Demande approche directe
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, demande approche directe piste ${rArr}.</span>`,
+    // Intégration circuit
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${rArr}.</span>`,
+    // Base leg
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, base piste ${rArr}.</span>`,
+    // Finale
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, finale piste ${rArr}, demande clearance atterrissage.</span>`,
+    // Libération piste
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let parkingText = parking ? " parking " + parking : " au parking";
+      return `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, piste ${rArr} dégagée, demande roulage${parkingText}.</span>`;
+    },
+    // Communications générales...
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, test radio.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message reçu.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
+      return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, position [position], ${altText}, estimé ${arr} dans [temps].</span>`;
+    },
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, demande vecteur radar pour l'approche.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ident.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, changement fréquence [fréquence], au revoir.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande priorité pour [raison].</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature du problème], position [position], demande assistance.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [urgence vitale], position [position], [nombre de personnes] personnes à bord.</span>`
   ],
   en: [
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, VFR at parking [position], destination ${arr}, request departure clearance.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, cleared VFR to ${arr}, ${alt ? alt + " feet" : "requested level"}, squawk ${squawk || "1200"}, report ready for taxi.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for taxi runway ${rDep}, destination ${arr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for immediate takeoff runway ${rDep}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, airborne runway ${rDep}, climbing ${alt ? alt + " feet" : "cleared level"}, VFR to ${arr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, request climb to ${alt ? alt + " feet" : "higher level"}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, level ${alt ? alt + " feet" : "current level"}, VFR from ${dep} to ${arr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, request heading ${deg}° direct instead of navigation point.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, ${alt ? alt + " feet" : "current level"}, [position], request VFR approach ${arr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request direct approach runway ${rArr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, entering ${lr} downwind runway ${rArr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, turning base runway ${rArr}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, final runway ${rArr}, request landing clearance.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, runway ${rArr} vacated, request taxi to parking${parking ? " " + parking : ""}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, radio check.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message received.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, position [position], ${alt ? alt + " feet" : "current level"}, estimating ${arr} in [time].</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request radar vector for approach.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ident.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, frequency change to [frequency], good day.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, request priority for [reason].</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature of problem], position [position], request assistance.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [vital emergency], position [position], [number] souls on board.</span>`
+    // Initial departure contact
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ${flightType.toUpperCase()} at parking [position], destination ${arr}, request departure clearance.`;
+      if (chartsStatus === 'outdated') base += ` Charts not current.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Clearance response
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "requested level";
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}, report ready for taxi.</span>`;
+    },
+    // Taxi request
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for taxi runway ${rDep}, destination ${arr}.`;
+      if (flightType === 'ifr') base += ` IFR flight plan activated.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Ready for takeoff
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for immediate takeoff runway ${rDep}.</span>`,
+    // Departure contact
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "cleared level";
+      let base = `${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, airborne runway ${rDep}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}.`;
+      if (chartsStatus === 'outdated' && flightType === 'ifr') base += ` URGENT: charts not current, request radar vectors.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Altitude change request
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let reqText = alt ? "climb " + (altType === 'fl' ? 'FL' + alt : alt + " feet") : "altitude assignment";
+      return `<span class="phrase">${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, request ${reqText}.</span>`;
+    },
+    // Center contact
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "current level";
+      let base = `Center, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} from ${dep} to ${arr}.`;
+      if (chartsStatus === 'outdated') base += ` Charts not current, request vectors.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Direct heading request
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let headingText = deg ? "heading " + deg + " degrees direct" : "direct heading";
+      let reason = chartsStatus === 'outdated' ? " (charts not current)" : " instead of navigation point";
+      return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, request ${headingText}${reason}.</span>`;
+    },
+    // Approach contact
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "current level";
+      let base = `${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, ${altText}, [position], request ${flightType.toUpperCase()} approach ${arr}.`;
+      if (chartsStatus === 'outdated') base += ` Charts outdated, request full guidance.`;
+      return `<span class="phrase">${base}</span>`;
+    },
+    // Direct approach request
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request direct approach runway ${rArr}.</span>`,
+    // Circuit integration
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, entering ${lr} downwind runway ${rArr}.</span>`,
+    // Base leg
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, turning base runway ${rArr}.</span>`,
+    // Final
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, final runway ${rArr}, request landing clearance.</span>`,
+    // Runway vacation
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let parkingText = parking ? " parking " + parking : " parking";
+      return `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, runway ${rArr} vacated, request taxi to${parkingText}.</span>`;
+    },
+    // General communications...
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, radio check.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message received.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "current level";
+      return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, position [position], ${altText}, estimating ${arr} in [time].</span>`;
+    },
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request radar vector for approach.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ident.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, frequency change to [frequency], good day.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, request priority for [reason].</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature of problem], position [position], request assistance.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [vital emergency], position [position], [number] souls on board.</span>`
   ]
 };
 
@@ -534,6 +665,17 @@ const stepTitles = {
     null, null
   ]
 };
+
+function setAltitudeType(type) {
+  altitudeType = type;
+  document.getElementById('alt-type-feet').classList.toggle('active', type === 'feet');
+  document.getElementById('alt-type-fl').classList.toggle('active', type === 'fl');
+  
+  // Réaffiche les phrases si déjà générées
+  if (document.getElementById('output').innerHTML.trim()) {
+    generatePhrases();
+  }
+}
 
 function setFlightType(type) {
   flightType = type;
@@ -590,6 +732,11 @@ function setSiteLang(lang) {
     if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
   });
   
+  // Altitude type buttons
+  document.querySelectorAll('.alt-type-btn').forEach(btn => {
+    if (btn.dataset[lang]) btn.textContent = btn.dataset[lang];
+  });
+  
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
     generatePhrases();
@@ -632,7 +779,7 @@ function generatePhrases(event) {
       html += stepList[i]();
     }
     if (!stepList[i]) {
-      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk)}</details>`;
+      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus)}</details>`;
     }
   }
 
@@ -644,6 +791,7 @@ setSiteLang('fr');
 setCommLang('en');
 setFlightType('ifr');
 setChartsStatus('outdated');
+setAltitudeType('feet');
 </script>
 
 </body>
