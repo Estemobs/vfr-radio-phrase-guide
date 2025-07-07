@@ -151,13 +151,13 @@
 <div class="options-switch">
   <div>
     <span>Type de vol :</span>
-    <button id="flight-vfr" class="active" onclick="setFlightType('vfr')" type="button">VFR</button>
-    <button id="flight-ifr" onclick="setFlightType('ifr')" type="button">IFR</button>
+    <button id="flight-vfr" onclick="setFlightType('vfr')" type="button">VFR</button>
+    <button id="flight-ifr" class="active" onclick="setFlightType('ifr')" type="button">IFR</button>
   </div>
   <div>
     <span>Cartes :</span>
-    <button id="charts-updated" class="active" onclick="setChartsStatus('updated')" type="button">À jour</button>
-    <button id="charts-outdated" onclick="setChartsStatus('outdated')" type="button">Pas à jour</button>
+    <button id="charts-updated" onclick="setChartsStatus('updated')" type="button">À jour</button>
+    <button id="charts-outdated" class="active" onclick="setChartsStatus('outdated')" type="button">Pas à jour</button>
   </div>
 </div>
 
@@ -210,8 +210,8 @@
 <script>
 let siteLang = 'fr';
 let commLang = 'en';
-let flightType = 'vfr';
-let chartsStatus = 'updated';
+let flightType = 'ifr';
+let chartsStatus = 'outdated';
 
 const infoTexts = {
   fr: {
@@ -642,8 +642,8 @@ function generatePhrases(event) {
 // Initialisation
 setSiteLang('fr');
 setCommLang('en');
-setFlightType('vfr');
-setChartsStatus('updated');
+setFlightType('ifr');
+setChartsStatus('outdated');
 </script>
 
 </body>
