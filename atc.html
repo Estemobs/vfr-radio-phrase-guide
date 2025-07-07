@@ -333,7 +333,7 @@
   <input type="text" id="parkingDep" name="parkingDep" required placeholder="Ex: A5, G23, Terminal 2E" />
 
   <label for="atisInfo" data-fr="Information ATIS (obligatoire)" data-en="ATIS information (required)">Information ATIS (obligatoire)</label>
-  <input type="text" id="atisInfo" name="atisInfo" required placeholder="Ex: Information Alpha, Bravo, Charlie..." maxlength="1" />
+  <input type="text" id="atisInfo" name="atisInfo" required placeholder="Ex: Information Alpha, Information Bravo, Information Charlie..." />
 
   <label for="arrival" data-fr="Arrivée (nom de l'aéroport)" data-en="Arrival (airport name)">Arrivée (nom de l'aéroport)</label>
   <input type="text" id="arrival" name="arrival" required placeholder="Ex: Paris Orly" />
@@ -756,7 +756,7 @@ const phrases = {
   en: [
     // Initial departure contact - Correct structure  
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
-      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, parking spot ${parkingDep}, ${flightType.toUpperCase()}, clearance for ${arr}, information ${atisInfo}`;
+      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, at parking ${parkingDep}, ${flightType.toUpperCase()}, clearance for ${arr}, information ${atisInfo}`;
       if (chartsStatus === 'outdated') base += `, charts not current`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
