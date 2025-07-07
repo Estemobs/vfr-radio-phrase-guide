@@ -142,6 +142,22 @@
     background: #dc3545;
     color: #fff;
   }
+  .alt-type-btn-small {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 0.75em;
+    font-weight: normal;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  .alt-type-btn-small.active {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+  }
   .phonetic-helper {
     margin: 20px 0;
     border: 1px solid #ddd;
@@ -342,14 +358,12 @@
   <input type="number" id="degree" name="degree" placeholder="Ex: 045 (laissez vide si inconnu)" min="0" max="359" />
 
   <label for="altitude" data-fr="Altitude (pieds) - optionnel" data-en="Altitude (feet) - optional">Altitude (pieds) - optionnel</label>
-  <input type="number" id="altitude" name="altitude" placeholder="Ex: 3500 (laissez vide si inconnue)" />
-
-  <div>
-    <label data-fr="Type d'altitude" data-en="Altitude type">Type d'altitude</label>
-    <div style="display: flex; gap: 10px; margin-top: 5px;">
-      <button type="button" id="alt-type-feet" class="alt-type-btn active" onclick="setAltitudeType('feet')" data-fr="Altitude (pieds)" data-en="Altitude (feet)">Altitude (pieds)</button>
-      <button type="button" id="alt-type-fl" class="alt-type-btn" onclick="setAltitudeType('fl')" data-fr="Flight Level" data-en="Flight Level">Flight Level</button>
-    </div>
+  <input type="number" id="altitude" name="altitude" placeholder="Ex: 3500 (laissez vide si inconnue)" onchange="toggleAltitudeButtons()" oninput="toggleAltitudeButtons()" />
+  
+  <!-- Boutons type d'altitude (affichés seulement si altitude renseignée) -->
+  <div id="altitudeTypeButtons" style="display: none; margin-top: 5px;">
+    <button type="button" id="alt-type-feet" class="alt-type-btn-small active" onclick="setAltitudeType('feet')" data-fr="Pieds" data-en="Feet">Pieds</button>
+    <button type="button" id="alt-type-fl" class="alt-type-btn-small" onclick="setAltitudeType('fl')" data-fr="FL" data-en="FL">FL</button>
   </div>
 
   <label for="leftRight" data-fr="Left or Right (downwind)" data-en="Left or Right (downwind)">Left or Right (downwind)</label>
@@ -676,7 +690,7 @@ const phrases = {
     },
     // Réponse autorisation
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau demandé";
+      let altText = formatAltitude(alt, altType, 'fr');
       let base = `Autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage, ${callsign || "Victor Juliet Zero Five"}.`;
       return `<span class="phrase">${base}</span>`;
     },
@@ -691,7 +705,7 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, prêt pour décollage immédiat piste ${rDep}, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     // Contact départ
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau autorisé";
+      let altText = formatAltitude(alt, altType, 'fr');
       let base = `Départ ${dep}, décollé piste ${rDep}, montée ${altText}, ${flightType.toUpperCase()} vers ${arr}`;
       if (chartsStatus === 'outdated' && flightType === 'ifr') base += `, URGENT : cartes non à jour, demande vecteurs radar`;
       base += `, ${callsign || "Victor Juliet Zero Five"}.`;
@@ -699,12 +713,12 @@ const phrases = {
     },
     // Demande changement altitude
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let reqText = alt ? "montée " + (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "assignation d'altitude";
+      let reqText = alt ? "montée " + formatAltitude(alt, altType, 'fr') : "assignation d'altitude";
       return `<span class="phrase">Départ ${dep}, demande ${reqText}, ${callsign || "Victor Juliet Zero Five"}.</span>`;
     },
     // Contact centre
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
+      let altText = formatAltitude(alt, altType, 'fr') || "niveau actuel";
       let base = `Centre, ${altText}, ${flightType.toUpperCase()} de ${dep} vers ${arr}`;
       if (chartsStatus === 'outdated') base += `, cartes non à jour, demande vecteurs`;
       base += `, ${callsign || "Victor Juliet Zero Five"}.`;
@@ -718,7 +732,7 @@ const phrases = {
     },
     // Contact approche
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
+      let altText = formatAltitude(alt, altType, 'fr') || "niveau actuel";
       let base = `Approche ${arr}, ${altText}, [position], demande approche ${flightType.toUpperCase()} ${arr}`;
       if (chartsStatus === 'outdated') base += `, cartes obsolètes, demande guidage complet`;
       base += `, ${callsign || "Victor Juliet Zero Five"}.`;
@@ -743,7 +757,7 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Speak slower please, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Roger, message reçu, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
+      let altText = formatAltitude(alt, altType, 'fr') || "niveau actuel";
       return `<span class="phrase">Centre, position [position], ${altText}, estimé ${arr} dans [temps], ${callsign || "Victor Juliet Zero Five"}.</span>`;
     },
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Approche ${arr}, demande vecteur radar pour l'approche, ${callsign || "Victor Juliet Zero Five"}.</span>`,
@@ -764,7 +778,7 @@ const phrases = {
     },
     // Clearance response
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "requested level";
+      let altText = formatAltitude(alt, altType, 'en');
       return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}, report ready for taxi.</span>`;
     },
     // Taxi request
@@ -777,19 +791,19 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for immediate takeoff runway ${rDep}.</span>`,
     // Departure contact
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "cleared level";
+      let altText = formatAltitude(alt, altType, 'en');
       let base = `${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, airborne runway ${rDep}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}.`;
       if (chartsStatus === 'outdated' && flightType === 'ifr') base += ` URGENT: charts not current, request radar vectors.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Altitude change request
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let reqText = alt ? "climb " + (altType === 'fl' ? 'FL' + alt : alt + " feet") : "altitude assignment";
+      let reqText = alt ? "climb " + formatAltitude(alt, altType, 'en') : "altitude assignment";
       return `<span class="phrase">${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, request ${reqText}.</span>`;
     },
     // Center contact
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "current level";
+      let altText = formatAltitude(alt, altType, 'en') || "current level";
       let base = `Center, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} from ${dep} to ${arr}.`;
       if (chartsStatus === 'outdated') base += ` Charts not current, request vectors.`;
       return `<span class="phrase">${base}</span>`;
@@ -802,7 +816,7 @@ const phrases = {
     },
     // Approach contact
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "current level";
+      let altText = formatAltitude(alt, altType, 'en') || "current level";
       let base = `${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, ${altText}, [position], request ${flightType.toUpperCase()} approach ${arr}.`;
       if (chartsStatus === 'outdated') base += ` Charts outdated, request full guidance.`;
       return `<span class="phrase">${base}</span>`;
@@ -826,7 +840,7 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message received.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "current level";
+      let altText = formatAltitude(alt, altType, 'en') || "current level";
       return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, position [position], ${altText}, estimating ${arr} in [time].</span>`;
     },
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request radar vector for approach.</span>`,
@@ -865,10 +879,46 @@ const stepTitles = {
   ]
 };
 
+// Fonction pour convertir l'altitude en format correct
+function formatAltitude(alt, altType, language = 'fr') {
+  if (!alt) return language === 'fr' ? "niveau demandé" : "requested level";
+  
+  if (altType === 'fl') {
+    // Pour Flight Level, on divise par 100 et on arrondit
+    const flNumber = Math.round(parseInt(alt) / 100);
+    if (flNumber < 10) {
+      return `FL${flNumber.toString().padStart(3, '0')}`; // FL045, FL065, etc.
+    } else {
+      return `FL${flNumber}`; // FL100, FL350, etc.
+    }
+  } else {
+    // Altitude en pieds
+    return language === 'fr' ? `${alt} pieds` : `${alt} feet`;
+  }
+}
+
+function toggleAltitudeButtons() {
+  const altitudeInput = document.getElementById('altitude');
+  const buttonsDiv = document.getElementById('altitudeTypeButtons');
+  
+  if (altitudeInput.value.trim()) {
+    buttonsDiv.style.display = 'block';
+  } else {
+    buttonsDiv.style.display = 'none';
+  }
+}
+
 function setAltitudeType(type) {
   altitudeType = type;
-  document.getElementById('alt-type-feet').classList.toggle('active', type === 'feet');
-  document.getElementById('alt-type-fl').classList.toggle('active', type === 'fl');
+  
+  // Mise à jour des petits boutons
+  const feetBtn = document.getElementById('alt-type-feet');
+  const flBtn = document.getElementById('alt-type-fl');
+  
+  if (feetBtn && flBtn) {
+    feetBtn.classList.toggle('active', type === 'feet');
+    flBtn.classList.toggle('active', type === 'fl');
+  }
   
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
