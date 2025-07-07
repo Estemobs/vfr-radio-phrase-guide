@@ -362,6 +362,20 @@
   <label for="squawk" data-fr="Code transpondeur (si connu)" data-en="Squawk code (if known)">Code transpondeur (si connu)</label>
   <input type="text" id="squawk" name="squawk" placeholder="Ex: 1200" maxlength="4" />
 
+  <label for="qnh" data-fr="QNH (facultatif)" data-en="QNH (optional)">QNH (facultatif)</label>
+  <select id="qnh" name="qnh" onchange="handleQNHChange()">
+    <option value="">-- Sélectionner ou saisir --</option>
+    <option value="1013">1013 hPa (Standard)</option>
+    <option value="1020">1020 hPa</option>
+    <option value="1015">1015 hPa</option>
+    <option value="1010">1010 hPa</option>
+    <option value="1005">1005 hPa</option>
+    <option value="1000">1000 hPa</option>
+    <option value="995">995 hPa</option>
+    <option value="custom">Autre valeur...</option>
+  </select>
+  <input type="number" id="qnhCustom" name="qnhCustom" placeholder="Ex: 1018" min="950" max="1050" style="display: none; margin-top: 5px;" />
+
   <button type="submit" data-fr="Générer les phrases ATC" data-en="Generate ATC phrases">Générer les phrases ATC</button>
 </form>
 
@@ -440,7 +454,8 @@ const explanations = {
       "Confirmation et répétition des éléments de clairance reçus.",
       "Demande de repoussage et démarrage moteurs.",
       "Push and start avec direction facing (réponse).",
-      "Demande de roulage vers la piste.",
+      "Demande de roulage.",
+      "Roulage vers piste avec itinéraire (réponse).",
       "Demande de décollage immédiat.",
       "Contact avec l'approche/départ après décollage.",
       "Demande de changement d'altitude.",
@@ -469,7 +484,8 @@ const explanations = {
       "Confirmation et répétition des éléments de clairance reçus.",
       "Demande de repoussage et démarrage moteurs.",
       "Push and start avec direction facing (réponse).",
-      "Demande de roulage vers la piste.",
+      "Demande de roulage.",
+      "Roulage vers piste avec itinéraire (réponse).",
       "Demande de décollage immédiat.",
       "Contact départ, demande vecteurs.",
       "Demande de changement d'altitude.",
@@ -498,7 +514,8 @@ const explanations = {
       "Confirmation et répétition des éléments de clairance reçus.",
       "Demande de repoussage et démarrage moteurs.",
       "Push and start avec direction facing (réponse).",
-      "Demande de roulage avec clairance IFR.",
+      "Demande de roulage.",
+      "Roulage vers piste avec itinéraire (réponse).",
       "Prêt pour décollage IFR.",
       "Contact départ après décollage IFR.",
       "Demande changement niveau de vol.",
@@ -527,7 +544,8 @@ const explanations = {
       "Confirmation et répétition des éléments de clairance reçus.",
       "Demande de repoussage et démarrage moteurs.",
       "Push and start avec direction facing (réponse).",
-      "Demande roulage.",
+      "Demande de roulage.",
+      "Roulage vers piste avec itinéraire (réponse).",
       "Prêt décollage IFR.",
       "Contact départ IFR.",
       "Demande changement niveau.",
@@ -558,7 +576,8 @@ const explanations = {
       "Readback and confirmation of clearance elements received.",
       "Request for push and start.",
       "Push and start with facing direction (response).",
-      "Request for taxi to runway.",
+      "Ready for taxi.",
+      "Taxi to runway with route (response).",
       "Request for immediate takeoff.",
       "Contact with approach/departure after takeoff.",
       "Request for altitude change.",
@@ -587,7 +606,8 @@ const explanations = {
       "Readback and confirmation of clearance elements received.",
       "Request for push and start.",
       "Push and start with facing direction (response).",
-      "Request for taxi to runway.",
+      "Ready for taxi.",
+      "Taxi to runway with route (response).",
       "Request for immediate takeoff.",
       "Departure contact with request for vectors.",
       "Request for altitude change.",
@@ -616,7 +636,9 @@ const explanations = {
       "Readback and confirmation of clearance elements received.",
       "Request for push and start.",
       "Push and start with facing direction (response).",
-      "Request for taxi with IFR clearance.",
+      "Ready for taxi.",
+      "Taxi to runway with route (response).",
+      "Ready for IFR takeoff.",
       "Ready for IFR takeoff.",
       "Departure contact after IFR takeoff.",
       "Request flight level change.",
@@ -645,7 +667,8 @@ const explanations = {
       "Readback and confirmation of clearance elements received.",
       "Request for push and start.",
       "Push and start with facing direction (response).",
-      "Request taxi.",
+      "Ready for taxi.",
+      "Taxi to runway with route (response).",
       "Ready IFR takeoff.",
       "IFR departure contact.",
       "Request level change.",
@@ -682,9 +705,10 @@ const phrases = {
       return `<span class="phrase">${base}</span>`;
     },
     // Confirmation répétition clairance (readback)
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh) => {
       let altText = formatAltitude(alt, altType, 'fr');
-      let base = `Autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, ${callsign || "Victor Juliet Zero Five"}`;
+      let qnhText = qnh ? `, QNH ${qnh}` : '';
+      let base = `Autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}${qnhText}, ${callsign || "Victor Juliet Zero Five"}`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -698,10 +722,11 @@ const phrases = {
     },
     // Demande roulage
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
-      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}`;
-      if (flightType === 'ifr') base += `, plan de vol IFR activé`;
-      base += '.';
-      return `<span class="phrase">${base}</span>`;
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for taxi.</span>`;
+    },
+    // Taxi for runway via
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, taxi for runway ${rDep} via <input type="text" id="taxiRouteInput" placeholder="A, B2, holding point..." style="display: inline; width: 300px; padding: 4px; margin: 0 4px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Prêt décollage
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour décollage immédiat piste ${rDep}.</span>`,
@@ -773,9 +798,10 @@ const phrases = {
       return `<span class="phrase">${base}</span>`;
     },
     // Readback confirmation
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh) => {
       let altText = formatAltitude(alt, altType, 'en');
-      let base = `Cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}, ${callsign || "Victor Juliet Zero Five"}`;
+      let qnhText = qnh ? `, QNH ${qnh}` : '';
+      let base = `Cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}${qnhText}, ${callsign || "Victor Juliet Zero Five"}`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -789,10 +815,11 @@ const phrases = {
     },
     // Taxi request
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for taxi runway ${rDep}, destination ${arr}`;
-      if (flightType === 'ifr') base += `, IFR flight plan activated`;
-      base += '.';
-      return `<span class="phrase">${base}</span>`;
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for taxi.</span>`;
+    },
+    // Taxi for runway via
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, taxi for runway ${rDep} via <input type="text" id="taxiRouteInputEn" placeholder="A, B2, holding point..." style="display: inline; width: 300px; padding: 4px; margin: 0 4px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Ready for takeoff
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for immediate takeoff runway ${rDep}.</span>`,
@@ -859,7 +886,7 @@ const phrases = {
 const stepTitles = {
   fr: [
     () => `<div class="step-title">🛫 Départ</div>`,
-    null, null, null,
+    null, null, null, null, null,
     () => `<div class="step-title">✈️ En route</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrivée</div>`,
@@ -871,7 +898,7 @@ const stepTitles = {
   ],
   en: [
     () => `<div class="step-title">🛫 Departure</div>`,
-    null, null, null,
+    null, null, null, null, null,
     () => `<div class="step-title">✈️ Enroute</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrival</div>`,
@@ -909,6 +936,30 @@ function toggleAltitudeButtons() {
     buttonsDiv.style.display = 'block';
   } else {
     buttonsDiv.style.display = 'none';
+  }
+}
+
+function handleQNHChange() {
+  const qnhSelect = document.getElementById('qnh');
+  const qnhCustomInput = document.getElementById('qnhCustom');
+  
+  if (qnhSelect.value === 'custom') {
+    qnhCustomInput.style.display = 'block';
+    qnhCustomInput.focus();
+  } else {
+    qnhCustomInput.style.display = 'none';
+    qnhCustomInput.value = '';
+  }
+}
+
+function getQNHValue() {
+  const qnhSelect = document.getElementById('qnh');
+  const qnhCustomInput = document.getElementById('qnhCustom');
+  
+  if (qnhSelect.value === 'custom') {
+    return qnhCustomInput.value.trim();
+  } else {
+    return qnhSelect.value;
   }
 }
 
@@ -980,6 +1031,19 @@ function setSiteLang(lang) {
   });
   document.querySelector('button[type="submit"]').textContent = document.querySelector('button[type="submit"]').dataset[lang];
   
+  // QNH select options
+  const qnhSelect = document.getElementById('qnh');
+  if (qnhSelect) {
+    const options = qnhSelect.options;
+    if (lang === 'fr') {
+      options[0].textContent = '-- Sélectionner ou saisir --';
+      options[7].textContent = 'Autre valeur...';
+    } else {
+      options[0].textContent = '-- Select or enter --';
+      options[7].textContent = 'Other value...';
+    }
+  }
+  
   // Select options
   document.querySelectorAll('#pushDirection option').forEach(opt => {
     if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
@@ -1022,6 +1086,7 @@ function generatePhrases(event) {
   const lr = "left"; // Valeur par défaut car le champ leftRight n'existe plus
   const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
+  const qnh = getQNHValue();
 
   // Validation des champs obligatoires UNIQUEMENT
   if (!depName) {
@@ -1049,7 +1114,7 @@ function generatePhrases(event) {
     return;
   }
   
-  // Le callsign et l'altitude sont OPTIONNELS - pas de validation
+  // Le callsign, l'altitude et le QNH sont OPTIONNELS - pas de validation
 
   const key = `${flightType}_${chartsStatus}`;
   const phraseList = phrases[commLang];
@@ -1063,7 +1128,7 @@ function generatePhrases(event) {
       html += stepList[i]();
     }
     // Toujours afficher la phrase (que le titre existe ou non)
-    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo)}</details>`;
+    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo, qnh)}</details>`;
   }
 
   document.getElementById("output").innerHTML = html;
