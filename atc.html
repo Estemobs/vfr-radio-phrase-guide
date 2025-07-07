@@ -225,68 +225,6 @@
 
 <a href="index.html" class="back-button">← Retour au menu principal</a>
 
-<!-- Menu aide alphabet phonétique -->
-<div class="phonetic-helper">
-  <details>
-    <summary><strong data-fr="📻 Aide alphabet phonétique OACI" data-en="📻 ICAO Phonetic Alphabet Help">📻 Aide alphabet phonétique OACI</strong></summary>
-    <div class="phonetic-grid">
-      <div class="phonetic-item">A = Alpha</div>
-      <div class="phonetic-item">B = Bravo</div>
-      <div class="phonetic-item">C = Charlie</div>
-      <div class="phonetic-item">D = Delta</div>
-      <div class="phonetic-item">E = Echo</div>
-      <div class="phonetic-item">F = Foxtrot</div>
-      <div class="phonetic-item">G = Golf</div>
-      <div class="phonetic-item">H = Hotel</div>
-      <div class="phonetic-item">I = India</div>
-      <div class="phonetic-item">J = Juliet</div>
-      <div class="phonetic-item">K = Kilo</div>
-      <div class="phonetic-item">L = Lima</div>
-      <div class="phonetic-item">M = Mike</div>
-      <div class="phonetic-item">N = November</div>
-      <div class="phonetic-item">O = Oscar</div>
-      <div class="phonetic-item">P = Papa</div>
-      <div class="phonetic-item">Q = Quebec</div>
-      <div class="phonetic-item">R = Romeo</div>
-      <div class="phonetic-item">S = Sierra</div>
-      <div class="phonetic-item">T = Tango</div>
-      <div class="phonetic-item">U = Uniform</div>
-      <div class="phonetic-item">V = Victor</div>
-      <div class="phonetic-item">W = Whiskey</div>
-      <div class="phonetic-item">X = X-ray</div>
-      <div class="phonetic-item">Y = Yankee</div>
-      <div class="phonetic-item">Z = Zulu</div>
-      <div class="phonetic-item">0 = Zero</div>
-      <div class="phonetic-item">1 = One</div>
-      <div class="phonetic-item">2 = Two</div>
-      <div class="phonetic-item">3 = Three</div>
-      <div class="phonetic-item">4 = Four</div>
-      <div class="phonetic-item">5 = Five</div>
-      <div class="phonetic-item">6 = Six</div>
-      <div class="phonetic-item">7 = Seven</div>
-      <div class="phonetic-item">8 = Eight</div>
-      <div class="phonetic-item">9 = Nine</div>
-    </div>
-  </details>
-</div>
-
-<!-- Convertisseur callsign -->
-<div class="callsign-converter">
-  <details>
-    <summary><strong data-fr="🔄 Convertisseur Callsign → Alphabet phonétique" data-en="🔄 Callsign → Phonetic Alphabet Converter">🔄 Convertisseur Callsign → Alphabet phonétique</strong></summary>
-    <div style="margin-top: 10px;">
-      <label for="callsignInput" data-fr="Saisissez votre callsign (ex: VJ05, F-ABCD) :" data-en="Enter your callsign (e.g.: VJ05, F-ABCD):">Saisissez votre callsign (ex: VJ05, F-ABCD) :</label>
-      <input type="text" id="callsignInput" placeholder="Ex: VJ05" style="margin-bottom: 10px;" />
-      <div id="phoneticOutput" style="background: #e7f3ff; border: 1px solid #b3d9ff; padding: 10px; border-radius: 4px; min-height: 20px; font-weight: bold;" data-fr="Conversion automatique apparaîtra ici..." data-en="Automatic conversion will appear here...">
-        Conversion automatique apparaîtra ici...
-      </div>
-      <button type="button" onclick="copyToCallsign()" style="margin-top: 10px; background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;" data-fr="📋 Copier dans le champ Callsign" data-en="📋 Copy to Callsign field">
-        📋 Copier dans le champ Callsign
-      </button>
-    </div>
-  </details>
-</div>
-
 <div class="lang-switch">
   <div>
     <span>Site :</span>
@@ -321,54 +259,62 @@
 </div>
 
 <form id="atcForm" onsubmit="generatePhrases(event)">
-  
+
+  <!-- Menu déroulant alphabet phonétique avec convertisseur -->
   <div class="phonetic-helper">
-    <h3 style="margin: 0 0 10px 0; color: #dc3545;">🎯 Alphabet phonétique aviation</h3>
-    <div class="phonetic-grid">
-      <div class="phonetic-item"><strong>A</strong> - Alpha</div>
-      <div class="phonetic-item"><strong>B</strong> - Bravo</div>
-      <div class="phonetic-item"><strong>C</strong> - Charlie</div>
-      <div class="phonetic-item"><strong>D</strong> - Delta</div>
-      <div class="phonetic-item"><strong>E</strong> - Echo</div>
-      <div class="phonetic-item"><strong>F</strong> - Foxtrot</div>
-      <div class="phonetic-item"><strong>G</strong> - Golf</div>
-      <div class="phonetic-item"><strong>H</strong> - Hotel</div>
-      <div class="phonetic-item"><strong>I</strong> - India</div>
-      <div class="phonetic-item"><strong>J</strong> - Juliet</div>
-      <div class="phonetic-item"><strong>K</strong> - Kilo</div>
-      <div class="phonetic-item"><strong>L</strong> - Lima</div>
-      <div class="phonetic-item"><strong>M</strong> - Mike</div>
-      <div class="phonetic-item"><strong>N</strong> - November</div>
-      <div class="phonetic-item"><strong>O</strong> - Oscar</div>
-      <div class="phonetic-item"><strong>P</strong> - Papa</div>
-      <div class="phonetic-item"><strong>Q</strong> - Quebec</div>
-      <div class="phonetic-item"><strong>R</strong> - Romeo</div>
-      <div class="phonetic-item"><strong>S</strong> - Sierra</div>
-      <div class="phonetic-item"><strong>T</strong> - Tango</div>
-      <div class="phonetic-item"><strong>U</strong> - Uniform</div>
-      <div class="phonetic-item"><strong>V</strong> - Victor</div>
-      <div class="phonetic-item"><strong>W</strong> - Whiskey</div>
-      <div class="phonetic-item"><strong>X</strong> - X-ray</div>
-      <div class="phonetic-item"><strong>Y</strong> - Yankee</div>
-      <div class="phonetic-item"><strong>Z</strong> - Zulu</div>
-    </div>
-    
-<!-- Convertisseur callsign -->
-<div class="callsign-converter">
-  <details>
-    <summary><strong>🔄 Convertisseur Callsign → Alphabet phonétique</strong></summary>
-    <div style="margin-top: 10px;">
-      <label for="callsignInput">Saisissez votre callsign (ex: VJ05, F-ABCD) :</label>
-      <input type="text" id="callsignInput" placeholder="Ex: VJ05" style="margin-bottom: 10px;" />
-      <div id="phoneticOutput" style="background: #e7f3ff; border: 1px solid #b3d9ff; padding: 10px; border-radius: 4px; min-height: 20px; font-weight: bold;">
-        Conversion automatique apparaîtra ici...
+    <details>
+      <summary><strong>🎯 Alphabet phonétique aviation</strong></summary>
+      
+      <!-- Convertisseur intégré -->
+      <div style="margin: 15px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px;">
+        <h4 style="margin: 0 0 10px 0; color: #dc3545;">🔄 Convertisseur alphabet phonétique</h4>
+        <label for="phoneticInput">Tapez un mot :</label>
+        <input type="text" id="phoneticInput" placeholder="Ex: VJ05" style="margin-bottom: 10px; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        <div id="phoneticResult" style="background: #e7f3ff; border: 1px solid #b3d9ff; padding: 10px; border-radius: 4px; min-height: 20px; font-weight: bold;">
+          Tapez quelque chose pour voir la conversion...
+        </div>
       </div>
-      <button type="button" onclick="copyToCallsign()" style="margin-top: 10px; background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
-        📋 Copier dans le champ Callsign
-      </button>
-    </div>
-  </details>
-</div>
+
+      <!-- Alphabet phonétique -->
+      <div class="phonetic-grid">
+        <div class="phonetic-item"><strong>A</strong> - Alpha</div>
+        <div class="phonetic-item"><strong>B</strong> - Bravo</div>
+        <div class="phonetic-item"><strong>C</strong> - Charlie</div>
+        <div class="phonetic-item"><strong>D</strong> - Delta</div>
+        <div class="phonetic-item"><strong>E</strong> - Echo</div>
+        <div class="phonetic-item"><strong>F</strong> - Foxtrot</div>
+        <div class="phonetic-item"><strong>G</strong> - Golf</div>
+        <div class="phonetic-item"><strong>H</strong> - Hotel</div>
+        <div class="phonetic-item"><strong>I</strong> - India</div>
+        <div class="phonetic-item"><strong>J</strong> - Juliet</div>
+        <div class="phonetic-item"><strong>K</strong> - Kilo</div>
+        <div class="phonetic-item"><strong>L</strong> - Lima</div>
+        <div class="phonetic-item"><strong>M</strong> - Mike</div>
+        <div class="phonetic-item"><strong>N</strong> - November</div>
+        <div class="phonetic-item"><strong>O</strong> - Oscar</div>
+        <div class="phonetic-item"><strong>P</strong> - Papa</div>
+        <div class="phonetic-item"><strong>Q</strong> - Quebec</div>
+        <div class="phonetic-item"><strong>R</strong> - Romeo</div>
+        <div class="phonetic-item"><strong>S</strong> - Sierra</div>
+        <div class="phonetic-item"><strong>T</strong> - Tango</div>
+        <div class="phonetic-item"><strong>U</strong> - Uniform</div>
+        <div class="phonetic-item"><strong>V</strong> - Victor</div>
+        <div class="phonetic-item"><strong>W</strong> - Whiskey</div>
+        <div class="phonetic-item"><strong>X</strong> - X-ray</div>
+        <div class="phonetic-item"><strong>Y</strong> - Yankee</div>
+        <div class="phonetic-item"><strong>Z</strong> - Zulu</div>
+        <div class="phonetic-item"><strong>0</strong> - Zero</div>
+        <div class="phonetic-item"><strong>1</strong> - One</div>
+        <div class="phonetic-item"><strong>2</strong> - Two</div>
+        <div class="phonetic-item"><strong>3</strong> - Three</div>
+        <div class="phonetic-item"><strong>4</strong> - Four</div>
+        <div class="phonetic-item"><strong>5</strong> - Five</div>
+        <div class="phonetic-item"><strong>6</strong> - Six</div>
+        <div class="phonetic-item"><strong>7</strong> - Seven</div>
+        <div class="phonetic-item"><strong>8</strong> - Eight</div>
+        <div class="phonetic-item"><strong>9</strong> - Nine</div>
+      </div>
+    </details>
   </div>
 
   <label for="callsign" data-fr="Callsign (optionnel)" data-en="Callsign (optional)">Callsign (optionnel)</label>
@@ -448,46 +394,25 @@ function convertToPhonetic(callsign) {
   }).join(' ');
 }
 
-// Fonction pour copier la conversion dans le champ callsign
-function copyToCallsign() {
-  const input = document.getElementById('callsignInput');
-  const callsignField = document.getElementById('callsign');
-  const phoneticOutput = document.getElementById('phoneticOutput');
+// Écouter les changements dans l'input du convertisseur simplifié
+document.addEventListener('DOMContentLoaded', function() {
+  const phoneticInput = document.getElementById('phoneticInput');
+  const phoneticResult = document.getElementById('phoneticResult');
   
-  if (input.value.trim()) {
-    callsignField.value = input.value.trim();
-    // Feedback visuel
-    const button = event.target;
-    const originalText = button.textContent;
-    button.textContent = '✅ Copié !';
-    button.style.background = '#218838';
-    setTimeout(() => {
-      button.textContent = originalText;
-      button.style.background = '#28a745';
-    }, 1500);
-  }
-}    // Écouter les changements dans l'input du convertisseur
-    document.addEventListener('DOMContentLoaded', function() {
-      const callsignInput = document.getElementById('callsignInput');
-      const phoneticOutput = document.getElementById('phoneticOutput');
-      
-      if (callsignInput && phoneticOutput) {
-        callsignInput.addEventListener('input', function() {
-          const value = this.value.trim();
-          if (value) {
-            const phonetic = convertToPhonetic(value);
-            phoneticOutput.textContent = phonetic;
-            phoneticOutput.style.color = '#333';
-          } else {
-            const defaultText = siteLang === 'fr' ? 
-              'Conversion automatique apparaîtra ici...' : 
-              'Automatic conversion will appear here...';
-            phoneticOutput.textContent = defaultText;
-            phoneticOutput.style.color = '#666';
-          }
-        });
+  if (phoneticInput && phoneticResult) {
+    phoneticInput.addEventListener('input', function() {
+      const value = this.value.trim();
+      if (value) {
+        const phonetic = convertToPhonetic(value);
+        phoneticResult.textContent = phonetic;
+        phoneticResult.style.color = '#333';
+      } else {
+        phoneticResult.textContent = 'Tapez quelque chose pour voir la conversion...';
+        phoneticResult.style.color = '#666';
       }
     });
+  }
+});
 
 const infoTexts = {
   fr: {
