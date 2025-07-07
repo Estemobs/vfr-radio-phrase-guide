@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VFR Radio Phrase Guide</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 10px;
+    background: #f0f4f8;
+    color: #222;
+  }
+  h1 {
+    text-align: center;
+    color: #004a99;
+  }
+  .lang-switch {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .lang-switch button {
+    background: #e6f0fa;
+    color: #004a99;
+    border: 1px solid #004a99;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .lang-switch button.active {
+    background: #004a99;
+    color: #fff;
+  }
+  label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+  }
+  input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    font-size: 1rem;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+  }
+  button[type="submit"] {
+    margin-top: 20px;
+    background-color: #004a99;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button[type="submit"]:hover {
+    background-color: #003366;
+  }
+  .phrase {
+    background: #e6f0fa;
+    color: #003366;
+    font-weight: bold;
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  details {
+    margin-bottom: 12px;
+    background: #fff;
+    border: 1px solid #cce;
+    border-radius: 4px;
+    padding: 6px 10px;
+  }
+  summary {
+    font-weight: bold;
+    cursor: pointer;
+    color: #004a99;
+  }
+  .step-title {
+    font-weight: bold;
+    font-size: 1.15em;
+    margin: 18px 0 8px 0;
+    color: #004a99;
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-switch">
+  <div>
+    <span>Site :</span>
+    <button id="site-fr" class="active" onclick="setSiteLang('fr')" type="button">Français</button>
+    <button id="site-en" onclick="setSiteLang('en')" type="button">English</button>
+  </div>
+  <div>
+    <span>Com radio :</span>
+    <button id="comm-fr" onclick="setCommLang('fr')" type="button">Français</button>
+    <button id="comm-en" class="active" onclick="setCommLang('en')" type="button">English</button>
+  </div>
+</div>
+
+<h1 id="main-title">VFR Radio Phrase Guide (UNICOM)</h1>
+
+<form id="vfrForm" onsubmit="generatePhrases(event)">
+  <label for="callsign" data-fr="Callsign (optionnel)" data-en="Callsign (optional)">Callsign (optionnel)</label>
+  <input type="text" id="callsign" name="callsign" placeholder="Ex: Victor Juliet Zero Five" />
+
+  <label for="departure" data-fr="Départ (nom de l'aéroport)" data-en="Departure (airport name)">Départ (nom de l'aéroport)</label>
+  <input type="text" id="departure" name="departure" required placeholder="Ex: Paris Charles-de-Gaulle" />
+
+  <label for="arrival" data-fr="Arrivée (nom de l'aéroport)" data-en="Arrival (airport name)">Arrivée (nom de l'aéroport)</label>
+  <input type="text" id="arrival" name="arrival" required placeholder="Ex: Paris Orly" />
+
+  <label for="runwayDep" data-fr="Piste départ" data-en="Departure runway">Piste départ</label>
+  <input type="text" id="runwayDep" name="runwayDep" required placeholder="Ex: 27" />
+
+  <label for="runwayArr" data-fr="Piste arrivée" data-en="Arrival runway">Piste arrivée</label>
+  <input type="text" id="runwayArr" name="runwayArr" required placeholder="Ex: 09" />
+
+  <label for="degree" data-fr="Cap (degré)" data-en="Heading (degree)">Cap (degré)</label>
+  <input type="number" id="degree" name="degree" required placeholder="Ex: 045" min="0" max="359" />
+
+  <label for="altitude" data-fr="Altitude (pieds)" data-en="Altitude (feet)">Altitude (pieds)</label>
+  <input type="number" id="altitude" name="altitude" placeholder="Ex: 3500" />
+
+  <label for="leftRight" data-fr="Left or Right (downwind)" data-en="Left or Right (downwind)">Left or Right (downwind)</label>
+  <select id="leftRight" name="leftRight" required>
+    <option value="left" data-fr="Left" data-en="Left">Left</option>
+    <option value="right" data-fr="Right" data-en="Right">Right</option>
+  </select>
+
+  <label for="parking" data-fr="Place de parking à l'arrivée" data-en="Arrival parking spot">Place de parking à l'arrivée</label>
+  <input type="text" id="parking" name="parking" placeholder="Ex: G23" />
+
+  <button type="submit" data-fr="Générer les phrases radio" data-en="Generate radio phrases">Générer les phrases radio</button>
+</form>
+
+<div id="output" aria-live="polite"></div>
+
+<script>
+let siteLang = 'fr';
+let commLang = 'en';
+
+const explanations = {
+  fr: [
+    "Annonce du départ de l'aéroport.",
+    "Annonce du démarrage moteur.",
+    "Annonce du roulage vers la piste.",
+    "Annonce du backtrack si nécessaire.",
+    "Annonce du décollage.",
+    "Début de la croisière.",
+    "Annonce de sortie de zone.",
+    "Annonce de position en route (optionnel).",
+    "Annonce de l'arrivée.",
+    "Annonce d'arrivée à 10 NM.",
+    "Annonce d'intégration vent arrière.",
+    "Annonce d'intégration en base.",
+    "Annonce en finale.",
+    "Annonce de dégagement de piste et roulage vers le parking."
+  ],
+  en: [
+    "Departure announcement from the airport.",
+    "Engine start announcement.",
+    "Taxi to runway announcement.",
+    "Backtrack announcement if needed.",
+    "Takeoff announcement.",
+    "Start of enroute phase.",
+    "Leaving the area announcement.",
+    "Enroute position report (optional).",
+    "Arrival announcement.",
+    "10 NM inbound announcement.",
+    "Downwind entry announcement.",
+    "Base leg announcement.",
+    "Final approach announcement.",
+    "Runway vacated and taxi to parking announcement."
+  ]
+};
+
+const steps = {
+  fr: [
+    "Départ",
+    null,
+    null,
+    null,
+    null,
+    "En route",
+    null,
+    null,
+    "Arrivée",
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  en: [
+    "Departure",
+    null,
+    null,
+    null,
+    null,
+    "Enroute",
+    null,
+    null,
+    "Arrival",
+    null,
+    null,
+    null,
+    null,
+    null
+  ]
+};
+
+const phrases = {
+  fr: [
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Mise en route au parking, VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Roulage vers la piste ${rDep}, VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Remontée piste ${rDep}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Décollage piste ${rDep}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Sortie de la zone, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">${alt ? alt + " pieds, " : ""}VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">10 nautiques au ${deg}° du terrain, intégration pour atterrissage piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Base piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Finale piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Piste dégagée, roulage vers parking${parking ? " " + parking : ""}, trafic ${arr}, ${callsign}.</span>`
+  ],
+  en: [
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Engine start at the ramp, VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Taxiing to runway ${rDep}, VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Backtracking runway ${rDep}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Taking off runway ${rDep}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Leaving the area, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">${alt ? alt + " feet, " : ""}VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">10 miles ${deg}° of the field, inbound for landing, runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Entering ${lr} downwind runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Turning base runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Final runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Clear of runway ${rArr}, taxiing to parking${parking ? " at " + parking : ""}, ${arr} traffic, ${callsign}.</span>`
+  ]
+};
+
+const stepTitles = {
+  fr: [
+    (dep) => `<div class="step-title" style="color:#111;font-weight:bold;">Départ – ${dep}</div>`,
+    null,
+    null,
+    null,
+    null,
+    () => `<div class="step-title" style="color:#111;font-weight:bold;">En route</div>`,
+    null,
+    null,
+    (arr) => `<div class="step-title" style="color:#111;font-weight:bold;">Arrivée – ${arr}</div>`,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  en: [
+    (dep) => `<div class="step-title" style="color:#111;font-weight:bold;">Departure – ${dep}</div>`,
+    null,
+    null,
+    null,
+    null,
+    () => `<div class="step-title" style="color:#111;font-weight:bold;">Enroute</div>`,
+    null,
+    null,
+    (arr) => `<div class="step-title" style="color:#111;font-weight:bold;">Arrival – ${arr}</div>`,
+    null,
+    null,
+    null,
+    null,
+    null
+  ]
+};
+
+// Ajout des explications et phrases facultatives
+const facultatifExplanations = {
+  fr: [
+    "Test radio.",
+    "Changement de destination (si vous changez d'aéroport en vol).",
+    "Remise de gaz / Go-around (si remise d’approche ou atterrissage raté).",
+    "Touch & Go ou circuit (remise des gaz après un toucher, puis réintégration du circuit pour un nouvel atterrissage).",
+    "Arrêt complet au parking.",
+    "Message d'urgence (Mayday)."
+  ],
+  en: [
+    "Radio check.",
+    "Changing destination (if you change airport enroute).",
+    "Go-around (if missed approach or landing).",
+    "Touch & Go or circuit (after touchdown, immediate takeoff and rejoining the circuit for another landing).",
+    "Full stop at parking.",
+    "Emergency message (Mayday)."
+  ]
+};
+
+const facultatifPhrases = {
+  fr: [
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Test radio, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Changement de destination, route vers [nouvelle destination], trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Remise de gaz, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Touch and go piste ${r}, remise en circuit, trafic ${dep}, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Arrêt complet au parking${parking ? " " + parking : ""}, trafic ${arr}, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Mayday, mayday, mayday, [nature de l’urgence], position [position], trafic ${dep}, ${callsign}.</span>`
+  ],
+  en: [
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Radio check, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Changing destination, now routing to [new destination], ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Going around, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Touch and go runway ${r}, rejoining the circuit, ${dep} traffic, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Full stop at parking${parking ? " " + parking : ""}, ${arr} traffic, ${callsign}.</span>`,
+    (dep, arr, r, alt, deg, lr, parking, callsign) => `<span class="phrase">Mayday, mayday, mayday, [nature of emergency], position [position], ${dep} traffic, ${callsign}.</span>`
+  ]
+};
+
+function setSiteLang(lang) {
+  siteLang = lang;
+  document.getElementById('site-fr').classList.toggle('active', lang === 'fr');
+  document.getElementById('site-en').classList.toggle('active', lang === 'en');
+  document.getElementById('main-title').textContent = lang === 'fr' ? "Guide des phrases radio VFR (UNICOM)" : "VFR Radio Phrase Guide (UNICOM)";
+  // Labels et placeholders
+  document.querySelectorAll('label').forEach(label => {
+    if (label.dataset[lang]) label.textContent = label.dataset[lang];
+  });
+  document.querySelector('button[type="submit"]').textContent = document.querySelector('button[type="submit"]').dataset[lang];
+  // Placeholders
+  document.getElementById('departure').placeholder = lang === 'fr' ? "Ex: Paris Charles-de-Gaulle" : "Ex: Paris Charles-de-Gaulle";
+  document.getElementById('arrival').placeholder = lang === 'fr' ? "Ex: Paris Orly" : "Ex: Paris Orly";
+  document.getElementById('runwayDep').placeholder = lang === 'fr' ? "Ex: 27" : "Ex: 27";
+  document.getElementById('runwayArr').placeholder = lang === 'fr' ? "Ex: 09" : "Ex: 09";
+  document.getElementById('degree').placeholder = lang === 'fr' ? "Ex: 045" : "Ex: 045";
+  document.getElementById('altitude').placeholder = lang === 'fr' ? "Ex: 3500" : "Ex: 3500";
+  document.getElementById('parking').placeholder = lang === 'fr' ? "Ex: G23" : "Ex: G23";
+  // Select options
+  document.querySelectorAll('#leftRight option').forEach(opt => {
+    if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
+  });
+  // Réaffiche les phrases si déjà générées
+  if (document.getElementById('output').innerHTML.trim()) {
+    generatePhrases();
+  }
+}
+
+function setCommLang(lang) {
+  commLang = lang;
+  document.getElementById('comm-fr').classList.toggle('active', lang === 'fr');
+  document.getElementById('comm-en').classList.toggle('active', lang === 'en');
+  // Réaffiche les phrases si déjà générées
+  if (document.getElementById('output').innerHTML.trim()) {
+    generatePhrases();
+  }
+}
+
+function generatePhrases(event) {
+  if(event) event.preventDefault();
+
+  let callsign = document.getElementById("callsign").value.trim();
+  if (!callsign) callsign = "Victor Juliet Zero Five";
+  const depName = document.getElementById("departure").value.trim();
+  const arrName = document.getElementById("arrival").value.trim();
+  const rDep = document.getElementById("runwayDep").value.trim();
+  const rArr = document.getElementById("runwayArr").value.trim();
+  const alt = document.getElementById("altitude").value.trim();
+  const deg = document.getElementById("degree").value.trim();
+  const lr = document.getElementById("leftRight").value;
+  const parking = document.getElementById("parking").value.trim();
+
+  const phraseList = phrases[commLang];
+  const explainList = explanations[siteLang];
+  const stepList = stepTitles[siteLang];
+
+  let html = "";
+  for(let i=0; i<phraseList.length; i++) {
+    if (stepList[i]) {
+      if (i === 0) html += stepList[i](depName);
+      else if (i === 5) html += stepList[i]();
+      else if (i === 8) html += stepList[i](arrName);
+    }
+    if (!stepList[i]) {
+      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign)}</details>`;
+    }
+  }
+
+  // Section FACULTATIF
+  html += `<div class="step-title" style="color:#111;font-weight:bold;margin-top:28px;">${siteLang === 'fr' ? "Facultatif / Situations particulières" : "Optional / Special situations"}</div>`;
+  const facultatifList = facultatifPhrases[commLang];
+  const facultatifExplain = facultatifExplanations[siteLang];
+  for(let i=0; i<facultatifList.length; i++) {
+    html += `<details><summary>${facultatifExplain[i]}</summary>${facultatifList[i](depName, arrName, rDep, alt, deg, lr, parking, callsign)}</details>`;
+  }
+
+  document.getElementById("output").innerHTML = html;
+}
+
+// Initialisation
+setSiteLang('fr');
+setCommLang('en');
+</script>
+
+</body>
+</html>

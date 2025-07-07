@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Communications ATC - VFR Radio Phrase Guide</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 10px;
+    background: #f0f4f8;
+    color: #222;
+  }
+  h1 {
+    text-align: center;
+    color: #dc3545;
+  }
+  .lang-switch {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .lang-switch button {
+    background: #fce8e6;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .lang-switch button.active {
+    background: #dc3545;
+    color: #fff;
+  }
+  .back-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .back-button:hover {
+    background: #5a6268;
+  }
+  label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+  }
+  input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    font-size: 1rem;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+  }
+  button[type="submit"] {
+    margin-top: 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button[type="submit"]:hover {
+    background-color: #c82333;
+  }
+  .phrase {
+    background: #fce8e6;
+    color: #721c24;
+    font-weight: bold;
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  details {
+    margin-bottom: 12px;
+    background: #fff;
+    border: 1px solid #f8d7da;
+    border-radius: 4px;
+    padding: 6px 10px;
+  }
+  summary {
+    font-weight: bold;
+    cursor: pointer;
+    color: #dc3545;
+  }
+  .step-title {
+    font-weight: bold;
+    font-size: 1.15em;
+    margin: 18px 0 8px 0;
+    color: #dc3545;
+  }
+  .info-box {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #0c5460;
+  }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-button">← Retour au menu principal</a>
+
+<div class="lang-switch">
+  <div>
+    <span>Site :</span>
+    <button id="site-fr" class="active" onclick="setSiteLang('fr')" type="button">Français</button>
+    <button id="site-en" onclick="setSiteLang('en')" type="button">English</button>
+  </div>
+  <div>
+    <span>Com radio :</span>
+    <button id="comm-fr" onclick="setCommLang('fr')" type="button">Français</button>
+    <button id="comm-en" class="active" onclick="setCommLang('en')" type="button">English</button>
+  </div>
+</div>
+
+<h1 id="main-title">Communications ATC - Guide des phrases radio VFR</h1>
+
+<div class="info-box">
+  <strong>ℹ️ Information importante :</strong><br>
+  Les communications ATC suivent des procédures strictes. Utilisez toujours les phrases officielles et respectez les instructions du contrôleur. En cas de doute, n'hésitez pas à demander des clarifications.
+</div>
+
+<form id="atcForm" onsubmit="generatePhrases(event)">
+  <label for="callsign" data-fr="Callsign (obligatoire)" data-en="Callsign (required)">Callsign (obligatoire)</label>
+  <input type="text" id="callsign" name="callsign" required placeholder="Ex: Victor Juliet Zero Five" />
+
+  <label for="departure" data-fr="Départ (nom de l'aéroport)" data-en="Departure (airport name)">Départ (nom de l'aéroport)</label>
+  <input type="text" id="departure" name="departure" required placeholder="Ex: Paris Charles-de-Gaulle" />
+
+  <label for="arrival" data-fr="Arrivée (nom de l'aéroport)" data-en="Arrival (airport name)">Arrivée (nom de l'aéroport)</label>
+  <input type="text" id="arrival" name="arrival" required placeholder="Ex: Paris Orly" />
+
+  <label for="flightLevel" data-fr="Niveau de vol demandé" data-en="Requested flight level">Niveau de vol demandé</label>
+  <select id="flightLevel" name="flightLevel" required>
+    <option value="2000">2000 pieds</option>
+    <option value="2500">2500 pieds</option>
+    <option value="3000">3000 pieds</option>
+    <option value="3500">3500 pieds</option>
+    <option value="4000">4000 pieds</option>
+    <option value="4500">4500 pieds</option>
+    <option value="5000">5000 pieds</option>
+  </select>
+
+  <label for="squawk" data-fr="Code transpondeur (si connu)" data-en="Squawk code (if known)">Code transpondeur (si connu)</label>
+  <input type="text" id="squawk" name="squawk" placeholder="Ex: 1200" maxlength="4" />
+
+  <label for="runway" data-fr="Piste" data-en="Runway">Piste</label>
+  <input type="text" id="runway" name="runway" placeholder="Ex: 27" />
+
+  <button type="submit" data-fr="Générer les phrases ATC" data-en="Generate ATC phrases">Générer les phrases ATC</button>
+</form>
+
+<div id="output" aria-live="polite"></div>
+
+<script>
+let siteLang = 'fr';
+let commLang = 'en';
+
+const explanations = {
+  fr: [
+    "Premier contact avec la tour de contrôle pour demande de départ.",
+    "Réponse à l'autorisation de départ et confirmation.",
+    "Demande de roulage vers la piste.",
+    "Confirmation de la clairance de décollage.",
+    "Contact avec l'approche/départ après décollage.",
+    "Contact avec le centre de contrôle en route.",
+    "Premier contact avec l'approche de destination.",
+    "Demande d'approche et atterrissage.",
+    "Confirmation de l'atterrissage et libération de piste.",
+    "Contact avec la tour au sol après atterrissage."
+  ],
+  en: [
+    "Initial contact with tower for departure clearance.",
+    "Response to departure clearance and confirmation.",
+    "Request for taxi to runway.",
+    "Takeoff clearance confirmation.",
+    "Contact with approach/departure after takeoff.",
+    "Contact with area control center enroute.",
+    "Initial contact with destination approach.",
+    "Approach and landing request.",
+    "Landing confirmation and runway vacation.",
+    "Ground contact with tower after landing."
+  ]
+};
+
+const phrases = {
+  fr: [
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Tour ${dep}, ${callsign}, VFR, parking [position], destination ${arr}, demande autorisation de départ.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, autorisé VFR vers ${arr}, niveau ${level} pieds, transpondeur ${squawk || "1200"}, appelez prêt pour roulage.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, prêt pour roulage, destination ${arr}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, autorisé décollage piste ${runway || "XX"}, après décollage cap [XXX], contactez départ [fréquence].</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Départ ${dep}, ${callsign}, décollé de ${dep}, montée ${level} pieds, VFR vers ${arr}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Centre, ${callsign}, niveau ${level} pieds, VFR de ${dep} vers ${arr}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Approche ${arr}, ${callsign}, niveau ${level} pieds, [position], demande approche VFR ${arr}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, approche ${arr}, rappelez en vue du terrain, piste en service ${runway || "XX"}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Tour ${arr}, ${callsign}, atterri piste ${runway || "XX"}, demande roulage parking.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, roulez parking [position] via [voies de circulation], contactez sol [fréquence].</span>`
+  ],
+  en: [
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${dep} Tower, ${callsign}, VFR, parking [position], destination ${arr}, request departure clearance.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, cleared VFR to ${arr}, ${level} feet, squawk ${squawk || "1200"}, report ready for taxi.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, ready for taxi, destination ${arr}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, cleared for takeoff runway ${runway || "XX"}, after departure heading [XXX], contact departure [frequency].</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${dep} Departure, ${callsign}, airborne from ${dep}, climbing ${level} feet, VFR to ${arr}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Center, ${callsign}, level ${level} feet, VFR from ${dep} to ${arr}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${arr} Approach, ${callsign}, ${level} feet, [position], request VFR approach ${arr}.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, ${arr} approach, report field in sight, runway ${runway || "XX"} in use.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${arr} Tower, ${callsign}, landed runway ${runway || "XX"}, request taxi to parking.</span>`,
+    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, taxi to parking [position] via [taxiways], contact ground [frequency].</span>`
+  ]
+};
+
+const stepTitles = {
+  fr: [
+    () => `<div class="step-title">🛫 Départ</div>`,
+    null,
+    null,
+    null,
+    () => `<div class="step-title">✈️ En route</div>`,
+    null,
+    () => `<div class="step-title">🛬 Arrivée</div>`,
+    null,
+    null,
+    null
+  ],
+  en: [
+    () => `<div class="step-title">🛫 Departure</div>`,
+    null,
+    null,
+    null,
+    () => `<div class="step-title">✈️ Enroute</div>`,
+    null,
+    () => `<div class="step-title">🛬 Arrival</div>`,
+    null,
+    null,
+    null
+  ]
+};
+
+function setSiteLang(lang) {
+  siteLang = lang;
+  document.getElementById('site-fr').classList.toggle('active', lang === 'fr');
+  document.getElementById('site-en').classList.toggle('active', lang === 'en');
+  document.getElementById('main-title').textContent = lang === 'fr' ? 
+    "Communications ATC - Guide des phrases radio VFR" : 
+    "ATC Communications - VFR Radio Phrase Guide";
+  
+  // Labels et placeholders
+  document.querySelectorAll('label').forEach(label => {
+    if (label.dataset[lang]) label.textContent = label.dataset[lang];
+  });
+  document.querySelector('button[type="submit"]').textContent = document.querySelector('button[type="submit"]').dataset[lang];
+  
+  // Réaffiche les phrases si déjà générées
+  if (document.getElementById('output').innerHTML.trim()) {
+    generatePhrases();
+  }
+}
+
+function setCommLang(lang) {
+  commLang = lang;
+  document.getElementById('comm-fr').classList.toggle('active', lang === 'fr');
+  document.getElementById('comm-en').classList.toggle('active', lang === 'en');
+  
+  // Réaffiche les phrases si déjà générées
+  if (document.getElementById('output').innerHTML.trim()) {
+    generatePhrases();
+  }
+}
+
+function generatePhrases(event) {
+  if(event) event.preventDefault();
+
+  const callsign = document.getElementById("callsign").value.trim();
+  const depName = document.getElementById("departure").value.trim();
+  const arrName = document.getElementById("arrival").value.trim();
+  const level = document.getElementById("flightLevel").value;
+  const squawk = document.getElementById("squawk").value.trim();
+  const runway = document.getElementById("runway").value.trim();
+
+  if (!callsign) {
+    alert(siteLang === 'fr' ? 'Le callsign est obligatoire pour les communications ATC.' : 'Callsign is required for ATC communications.');
+    return;
+  }
+
+  const phraseList = phrases[commLang];
+  const explainList = explanations[siteLang];
+  const stepList = stepTitles[siteLang];
+
+  let html = "";
+  for(let i = 0; i < phraseList.length; i++) {
+    if (stepList[i]) {
+      html += stepList[i]();
+    }
+    if (!stepList[i]) {
+      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, callsign, level, squawk, runway)}</details>`;
+    }
+  }
+
+  document.getElementById("output").innerHTML = html;
+}
+
+// Initialisation
+setSiteLang('fr');
+setCommLang('en');
+</script>
+
+</body>
+</html>
