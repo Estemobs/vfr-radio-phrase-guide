@@ -319,16 +319,6 @@
         <div class="phonetic-item"><strong>X</strong> - X-ray</div>
         <div class="phonetic-item"><strong>Y</strong> - Yankee</div>
         <div class="phonetic-item"><strong>Z</strong> - Zulu</div>
-        <div class="phonetic-item"><strong>0</strong> - Zero</div>
-        <div class="phonetic-item"><strong>1</strong> - One</div>
-        <div class="phonetic-item"><strong>2</strong> - Two</div>
-        <div class="phonetic-item"><strong>3</strong> - Three</div>
-        <div class="phonetic-item"><strong>4</strong> - Four</div>
-        <div class="phonetic-item"><strong>5</strong> - Five</div>
-        <div class="phonetic-item"><strong>6</strong> - Six</div>
-        <div class="phonetic-item"><strong>7</strong> - Seven</div>
-        <div class="phonetic-item"><strong>8</strong> - Eight</div>
-        <div class="phonetic-item"><strong>9</strong> - Nine</div>
       </div>
     </details>
   </div>
@@ -674,62 +664,61 @@ const explanations = {
 
 const phrases = {
   fr: [
-    // Contact initial départ - Parking de départ et ATIS obligatoires
+    // Contact initial départ - Structure correcte
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
-      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, au parking ${parkingDep}, information ${atisInfo}, destination ${arr}, demande autorisation de départ ${flightType.toUpperCase()}`;
-      if (rDep) base += `, piste ${rDep}`;
-      if (chartsStatus === 'outdated') base += `, attention : cartes non à jour`;
+      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, place de parking ${parkingDep}, ${flightType.toUpperCase()}, clearance pour ${arr}, information ${atisInfo}`;
+      if (chartsStatus === 'outdated') base += `, cartes non à jour`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
-    // Réponse autorisation
+    // Réponse autorisation ATC
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr');
-      let base = `Autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage, ${callsign || "Victor Juliet Zero Five"}.`;
+      let base = `${callsign || "Victor Juliet Zero Five"}, autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Demande roulage
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let base = `Tour ${dep}, prêt pour roulage piste ${rDep}, destination ${arr}`;
+      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}`;
       if (flightType === 'ifr') base += `, plan de vol IFR activé`;
-      base += `, ${callsign || "Victor Juliet Zero Five"}.`;
+      base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Prêt décollage
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, prêt pour décollage immédiat piste ${rDep}, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour décollage immédiat piste ${rDep}.</span>`,
     // Contact départ
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr');
-      let base = `Départ ${dep}, décollé piste ${rDep}, montée ${altText}, ${flightType.toUpperCase()} vers ${arr}`;
+      let base = `Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, décollé piste ${rDep}, montée ${altText}, ${flightType.toUpperCase()} vers ${arr}`;
       if (chartsStatus === 'outdated' && flightType === 'ifr') base += `, URGENT : cartes non à jour, demande vecteurs radar`;
-      base += `, ${callsign || "Victor Juliet Zero Five"}.`;
+      base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Demande changement altitude
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let reqText = alt ? "montée " + formatAltitude(alt, altType, 'fr') : "assignation d'altitude";
-      return `<span class="phrase">Départ ${dep}, demande ${reqText}, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      return `<span class="phrase">Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande ${reqText}.</span>`;
     },
     // Contact centre
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr') || "niveau actuel";
-      let base = `Centre, ${altText}, ${flightType.toUpperCase()} de ${dep} vers ${arr}`;
+      let base = `Centre, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} de ${dep} vers ${arr}`;
       if (chartsStatus === 'outdated') base += `, cartes non à jour, demande vecteurs`;
-      base += `, ${callsign || "Victor Juliet Zero Five"}.`;
+      base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Demande cap direct
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let capText = deg ? "cap " + deg + "° direct" : "cap direct";
       let reason = chartsStatus === 'outdated' ? " (cartes non à jour)" : " au lieu du point de navigation";
-      return `<span class="phrase">Centre, demande ${capText}${reason}, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande ${capText}${reason}.</span>`;
     },
     // Contact approche
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr') || "niveau actuel";
-      let base = `Approche ${arr}, ${altText}, [position], demande approche ${flightType.toUpperCase()} ${arr}`;
+      let base = `Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, ${altText}, [position], demande approche ${flightType.toUpperCase()} ${arr}`;
       if (chartsStatus === 'outdated') base += `, cartes obsolètes, demande guidage complet`;
-      base += `, ${callsign || "Victor Juliet Zero Five"}.`;
+      base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Demande approche directe
@@ -762,23 +751,23 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, [urgence vitale], position [position], [nombre de personnes] personnes à bord, ${callsign || "Victor Juliet Zero Five"}.</span>`
   ],
   en: [
-    // Initial departure contact - Parking and ATIS required
+    // Initial departure contact - Correct structure  
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
-      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, at parking ${parkingDep}, information ${atisInfo}, destination ${arr}, request ${flightType.toUpperCase()} departure clearance`;
-      if (rDep) base += `, runway ${rDep}`;
+      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, parking spot ${parkingDep}, ${flightType.toUpperCase()}, clearance for ${arr}, information ${atisInfo}`;
       if (chartsStatus === 'outdated') base += `, charts not current`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
-    // Clearance response
+    // Clearance response ATC
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en');
       return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}, report ready for taxi.</span>`;
     },
     // Taxi request
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for taxi runway ${rDep}, destination ${arr}.`;
-      if (flightType === 'ifr') base += ` IFR flight plan activated.`;
+      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for taxi runway ${rDep}, destination ${arr}`;
+      if (flightType === 'ifr') base += `, IFR flight plan activated`;
+      base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Ready for takeoff
@@ -786,8 +775,9 @@ const phrases = {
     // Departure contact
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en');
-      let base = `${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, airborne runway ${rDep}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}.`;
-      if (chartsStatus === 'outdated' && flightType === 'ifr') base += ` URGENT: charts not current, request radar vectors.`;
+      let base = `${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, airborne runway ${rDep}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}`;
+      if (chartsStatus === 'outdated' && flightType === 'ifr') base += `, URGENT: charts not current, request radar vectors`;
+      base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Altitude change request
