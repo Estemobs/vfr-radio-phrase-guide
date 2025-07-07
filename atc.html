@@ -445,10 +445,10 @@ const explanations = {
       "Prêt pour décollage.",
       "Autorisé décollage avec cap après décollage.",
       "Contact avec l'approche/départ après décollage.",
-      "Demande de changement d'altitude.",
+      "Premier contact avec une nouvelle zone de contrôle (check-in).",
+      "Demande de changement de niveau de vol.",
       "Contact avec le centre de contrôle en route.",
       "Demande de cap direct au lieu d'un point de navigation.",
-      "Premier contact avec une nouvelle zone de contrôle (check-in).",
       "Premier contact avec l'approche de destination.",
       "Demande d'approche directe.",
       "Intégration dans le circuit d'aérodrome.",
@@ -477,10 +477,10 @@ const explanations = {
       "Prêt pour décollage.",
       "Autorisé décollage avec cap après décollage.",
       "Contact départ, demande vecteurs.",
-      "Demande de changement d'altitude.",
+      "Premier contact avec une nouvelle zone de contrôle (check-in).",
+      "Demande de changement de niveau de vol.",
       "Contact centre, demande caps directs.",
       "Demande cap direct.",
-      "Premier contact avec une nouvelle zone de contrôle (check-in).",
       "Contact approche destination.",
       "Demande approche directe.",
       "Intégration circuit.",
@@ -509,10 +509,10 @@ const explanations = {
       "Prêt pour décollage IFR.",
       "Autorisé décollage IFR avec cap après décollage.",
       "Contact départ après décollage IFR.",
-      "Demande changement niveau de vol.",
+      "Premier contact avec une nouvelle zone de contrôle (check-in).",
+      "Demande de changement de niveau de vol.",
       "Contact centre en route IFR.",
       "Demande routage direct (déviation plan de vol).",
-      "Premier contact avec une nouvelle zone de contrôle (check-in).",
       "Contact approche IFR destination.",
       "Demande approche aux instruments.",
       "Confirmation approche assignée.",
@@ -541,10 +541,10 @@ const explanations = {
       "Prêt décollage IFR.",
       "Autorisé décollage IFR avec cap après décollage.",
       "Contact départ IFR.",
-      "Demande changement niveau.",
+      "Premier contact avec une nouvelle zone de contrôle (check-in).",
+      "Demande de changement de niveau de vol.",
       "Contact centre, demande vecteurs.",
       "Demande cap direct.",
-      "Premier contact avec une nouvelle zone de contrôle (check-in).",
       "Contact approche IFR.",
       "Demande vecteurs radar.",
       "Demande guidage complet.",
@@ -575,10 +575,10 @@ const explanations = {
       "Ready for takeoff.",
       "Clear for takeoff with heading after takeoff.",
       "Contact with approach/departure after takeoff.",
-      "Request for altitude change.",
+      "Initial contact with new control zone (check-in).",
+      "Request for flight level change.",
       "Contact with area control center enroute.",
       "Request for direct heading instead of navigation point.",
-      "Initial contact with new control zone (check-in).",
       "Initial contact with destination approach.",
       "Request for direct approach.",
       "Integration into airport circuit.",
@@ -607,10 +607,10 @@ const explanations = {
       "Ready for takeoff.",
       "Clear for takeoff with heading after takeoff.",
       "Departure contact with request for vectors.",
-      "Request for altitude change.",
+      "Initial contact with new control zone (check-in).",
+      "Request for flight level change.",
       "Center contact with heading request.",
       "Request direct heading.",
-      "Initial contact with new control zone (check-in).",
       "Approach contact at destination.",
       "Request direct approach.",
       "Circuit integration.",
@@ -639,7 +639,8 @@ const explanations = {
       "Ready for IFR takeoff.",
       "Clear for IFR takeoff with heading after takeoff.",
       "Departure contact after IFR takeoff.",
-      "Request flight level change.",
+      "Initial contact with new control zone (check-in).",
+      "Request for flight level change.",
       "Center contact enroute IFR.",
       "Request direct routing (flight plan deviation).",
       "Initial contact with new control zone (check-in).",
@@ -671,10 +672,10 @@ const explanations = {
       "Ready IFR takeoff.",
       "Clear for IFR takeoff with heading after takeoff.",
       "IFR departure contact.",
-      "Request level change.",
+      "Initial contact with new control zone (check-in).",
+      "Request for flight level change.",
       "Center contact with request for vectors.",
       "Request direct heading.",
-      "Initial contact with new control zone (check-in).",
       "IFR approach contact.",
       "Request radar vectors.",
       "Request full guidance.",
@@ -738,7 +739,7 @@ const phrases = {
     // Contact départ IFR
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh) => {
       let altText = formatAltitude(alt, altType, 'fr');
-      return `<span class="phrase"><input type="text" placeholder="Nom de la tour" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}. Good day, we are passing <input type="text" placeholder="position/altitude" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;"> climbing flight level <input type="text" placeholder="FL" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
+      return `<span class="phrase"><input type="text" placeholder="Nom de la tour" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}. Good day, we are passing <input type="text" placeholder="position/altitude" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Transition zone de contrôle
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
@@ -746,8 +747,7 @@ const phrases = {
     },
     // Demande changement altitude
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let reqText = alt ? "montée " + formatAltitude(alt, altType, 'fr') : "assignation d'altitude";
-      return `<span class="phrase">Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande ${reqText}.</span>`;
+      return `<span class="phrase"><input type="text" placeholder="Nom contrôleur" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb FL<input type="text" placeholder="150" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Contact centre
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
@@ -837,7 +837,7 @@ const phrases = {
     // Departure contact
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en');
-      return `<span class="phrase"><input type="text" placeholder="Tower name" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}. Good day, we are passing <input type="text" placeholder="position/altitude" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;"> climbing flight level <input type="text" placeholder="FL" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
+      return `<span class="phrase"><input type="text" placeholder="Tower name" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}. Good day, we are passing <input type="text" placeholder="position/altitude" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Control zone transition
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
@@ -845,8 +845,7 @@ const phrases = {
     },
     // Altitude change request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let reqText = alt ? "climb " + formatAltitude(alt, altType, 'en') : "altitude assignment";
-      return `<span class="phrase">${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, request ${reqText}.</span>`;
+      return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb FL<input type="text" placeholder="150" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Center contact
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
