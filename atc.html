@@ -142,11 +142,150 @@
     background: #dc3545;
     color: #fff;
   }
+  .phonetic-helper {
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f8f9fa;
+  }
+
+  .phonetic-helper summary {
+    padding: 15px;
+    cursor: pointer;
+    background: #e9ecef;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.3s;
+  }
+
+  .phonetic-helper summary:hover {
+    background: #dee2e6;
+  }
+
+  .phonetic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    padding: 15px;
+  }
+
+  .phonetic-item {
+    background: white;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9em;
+    border: 1px solid #e9ecef;
+  }
+
+  .callsign-converter {
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f8f9fa;
+  }
+
+  .callsign-converter summary {
+    padding: 15px;
+    cursor: pointer;
+    background: #e7f3ff;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.3s;
+  }
+
+  .callsign-converter summary:hover {
+    background: #d1ecf1;
+  }
+
+  .callsign-converter > div {
+    padding: 15px;
+  }
+
+  .callsign-converter input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
+  /* Responsive pour mobile */
+  @media (max-width: 768px) {
+    .phonetic-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .phonetic-item {
+      font-size: 0.8em;
+      padding: 6px;
+    }
+  }
 </style>
 </head>
 <body>
 
 <a href="index.html" class="back-button">← Retour au menu principal</a>
+
+<!-- Menu aide alphabet phonétique -->
+<div class="phonetic-helper">
+  <details>
+    <summary><strong data-fr="📻 Aide alphabet phonétique OACI" data-en="📻 ICAO Phonetic Alphabet Help">📻 Aide alphabet phonétique OACI</strong></summary>
+    <div class="phonetic-grid">
+      <div class="phonetic-item">A = Alpha</div>
+      <div class="phonetic-item">B = Bravo</div>
+      <div class="phonetic-item">C = Charlie</div>
+      <div class="phonetic-item">D = Delta</div>
+      <div class="phonetic-item">E = Echo</div>
+      <div class="phonetic-item">F = Foxtrot</div>
+      <div class="phonetic-item">G = Golf</div>
+      <div class="phonetic-item">H = Hotel</div>
+      <div class="phonetic-item">I = India</div>
+      <div class="phonetic-item">J = Juliet</div>
+      <div class="phonetic-item">K = Kilo</div>
+      <div class="phonetic-item">L = Lima</div>
+      <div class="phonetic-item">M = Mike</div>
+      <div class="phonetic-item">N = November</div>
+      <div class="phonetic-item">O = Oscar</div>
+      <div class="phonetic-item">P = Papa</div>
+      <div class="phonetic-item">Q = Quebec</div>
+      <div class="phonetic-item">R = Romeo</div>
+      <div class="phonetic-item">S = Sierra</div>
+      <div class="phonetic-item">T = Tango</div>
+      <div class="phonetic-item">U = Uniform</div>
+      <div class="phonetic-item">V = Victor</div>
+      <div class="phonetic-item">W = Whiskey</div>
+      <div class="phonetic-item">X = X-ray</div>
+      <div class="phonetic-item">Y = Yankee</div>
+      <div class="phonetic-item">Z = Zulu</div>
+      <div class="phonetic-item">0 = Zero</div>
+      <div class="phonetic-item">1 = One</div>
+      <div class="phonetic-item">2 = Two</div>
+      <div class="phonetic-item">3 = Three</div>
+      <div class="phonetic-item">4 = Four</div>
+      <div class="phonetic-item">5 = Five</div>
+      <div class="phonetic-item">6 = Six</div>
+      <div class="phonetic-item">7 = Seven</div>
+      <div class="phonetic-item">8 = Eight</div>
+      <div class="phonetic-item">9 = Nine</div>
+    </div>
+  </details>
+</div>
+
+<!-- Convertisseur callsign -->
+<div class="callsign-converter">
+  <details>
+    <summary><strong data-fr="🔄 Convertisseur Callsign → Alphabet phonétique" data-en="🔄 Callsign → Phonetic Alphabet Converter">🔄 Convertisseur Callsign → Alphabet phonétique</strong></summary>
+    <div style="margin-top: 10px;">
+      <label for="callsignInput" data-fr="Saisissez votre callsign (ex: VJ05, F-ABCD) :" data-en="Enter your callsign (e.g.: VJ05, F-ABCD):">Saisissez votre callsign (ex: VJ05, F-ABCD) :</label>
+      <input type="text" id="callsignInput" placeholder="Ex: VJ05" style="margin-bottom: 10px;" />
+      <div id="phoneticOutput" style="background: #e7f3ff; border: 1px solid #b3d9ff; padding: 10px; border-radius: 4px; min-height: 20px; font-weight: bold;" data-fr="Conversion automatique apparaîtra ici..." data-en="Automatic conversion will appear here...">
+        Conversion automatique apparaîtra ici...
+      </div>
+      <button type="button" onclick="copyToCallsign()" style="margin-top: 10px; background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;" data-fr="📋 Copier dans le champ Callsign" data-en="📋 Copy to Callsign field">
+        📋 Copier dans le champ Callsign
+      </button>
+    </div>
+  </details>
+</div>
 
 <div class="lang-switch">
   <div>
@@ -182,6 +321,56 @@
 </div>
 
 <form id="atcForm" onsubmit="generatePhrases(event)">
+  
+  <div class="phonetic-helper">
+    <h3 style="margin: 0 0 10px 0; color: #dc3545;">🎯 Alphabet phonétique aviation</h3>
+    <div class="phonetic-grid">
+      <div class="phonetic-item"><strong>A</strong> - Alpha</div>
+      <div class="phonetic-item"><strong>B</strong> - Bravo</div>
+      <div class="phonetic-item"><strong>C</strong> - Charlie</div>
+      <div class="phonetic-item"><strong>D</strong> - Delta</div>
+      <div class="phonetic-item"><strong>E</strong> - Echo</div>
+      <div class="phonetic-item"><strong>F</strong> - Foxtrot</div>
+      <div class="phonetic-item"><strong>G</strong> - Golf</div>
+      <div class="phonetic-item"><strong>H</strong> - Hotel</div>
+      <div class="phonetic-item"><strong>I</strong> - India</div>
+      <div class="phonetic-item"><strong>J</strong> - Juliet</div>
+      <div class="phonetic-item"><strong>K</strong> - Kilo</div>
+      <div class="phonetic-item"><strong>L</strong> - Lima</div>
+      <div class="phonetic-item"><strong>M</strong> - Mike</div>
+      <div class="phonetic-item"><strong>N</strong> - November</div>
+      <div class="phonetic-item"><strong>O</strong> - Oscar</div>
+      <div class="phonetic-item"><strong>P</strong> - Papa</div>
+      <div class="phonetic-item"><strong>Q</strong> - Quebec</div>
+      <div class="phonetic-item"><strong>R</strong> - Romeo</div>
+      <div class="phonetic-item"><strong>S</strong> - Sierra</div>
+      <div class="phonetic-item"><strong>T</strong> - Tango</div>
+      <div class="phonetic-item"><strong>U</strong> - Uniform</div>
+      <div class="phonetic-item"><strong>V</strong> - Victor</div>
+      <div class="phonetic-item"><strong>W</strong> - Whiskey</div>
+      <div class="phonetic-item"><strong>X</strong> - X-ray</div>
+      <div class="phonetic-item"><strong>Y</strong> - Yankee</div>
+      <div class="phonetic-item"><strong>Z</strong> - Zulu</div>
+    </div>
+    
+<!-- Convertisseur callsign -->
+<div class="callsign-converter">
+  <details>
+    <summary><strong>🔄 Convertisseur Callsign → Alphabet phonétique</strong></summary>
+    <div style="margin-top: 10px;">
+      <label for="callsignInput">Saisissez votre callsign (ex: VJ05, F-ABCD) :</label>
+      <input type="text" id="callsignInput" placeholder="Ex: VJ05" style="margin-bottom: 10px;" />
+      <div id="phoneticOutput" style="background: #e7f3ff; border: 1px solid #b3d9ff; padding: 10px; border-radius: 4px; min-height: 20px; font-weight: bold;">
+        Conversion automatique apparaîtra ici...
+      </div>
+      <button type="button" onclick="copyToCallsign()" style="margin-top: 10px; background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
+        📋 Copier dans le champ Callsign
+      </button>
+    </div>
+  </details>
+</div>
+  </div>
+
   <label for="callsign" data-fr="Callsign (optionnel)" data-en="Callsign (optional)">Callsign (optionnel)</label>
   <input type="text" id="callsign" name="callsign" placeholder="Ex: Victor Juliet Zero Five" />
 
@@ -234,6 +423,71 @@ let commLang = 'en';
 let flightType = 'ifr';
 let chartsStatus = 'outdated';
 let altitudeType = 'feet';
+
+// Dictionnaire alphabet phonétique OACI
+const phoneticAlphabet = {
+  'A': 'Alpha', 'B': 'Bravo', 'C': 'Charlie', 'D': 'Delta', 'E': 'Echo',
+  'F': 'Foxtrot', 'G': 'Golf', 'H': 'Hotel', 'I': 'India', 'J': 'Juliet',
+  'K': 'Kilo', 'L': 'Lima', 'M': 'Mike', 'N': 'November', 'O': 'Oscar',
+  'P': 'Papa', 'Q': 'Quebec', 'R': 'Romeo', 'S': 'Sierra', 'T': 'Tango',
+  'U': 'Uniform', 'V': 'Victor', 'W': 'Whiskey', 'X': 'X-ray', 'Y': 'Yankee',
+  'Z': 'Zulu', '0': 'Zero', '1': 'One', '2': 'Two', '3': 'Three', '4': 'Four',
+  '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine'
+};
+
+// Fonction pour convertir un callsign en alphabet phonétique
+function convertToPhonetic(callsign) {
+  return callsign.toUpperCase().split('').map(char => {
+    if (phoneticAlphabet[char]) {
+      return phoneticAlphabet[char];
+    } else if (char === '-') {
+      return '-';
+    } else {
+      return char; // caractères non convertibles (espaces, etc.)
+    }
+  }).join(' ');
+}
+
+// Fonction pour copier la conversion dans le champ callsign
+function copyToCallsign() {
+  const input = document.getElementById('callsignInput');
+  const callsignField = document.getElementById('callsign');
+  const phoneticOutput = document.getElementById('phoneticOutput');
+  
+  if (input.value.trim()) {
+    callsignField.value = input.value.trim();
+    // Feedback visuel
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = '✅ Copié !';
+    button.style.background = '#218838';
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.style.background = '#28a745';
+    }, 1500);
+  }
+}    // Écouter les changements dans l'input du convertisseur
+    document.addEventListener('DOMContentLoaded', function() {
+      const callsignInput = document.getElementById('callsignInput');
+      const phoneticOutput = document.getElementById('phoneticOutput');
+      
+      if (callsignInput && phoneticOutput) {
+        callsignInput.addEventListener('input', function() {
+          const value = this.value.trim();
+          if (value) {
+            const phonetic = convertToPhonetic(value);
+            phoneticOutput.textContent = phonetic;
+            phoneticOutput.style.color = '#333';
+          } else {
+            const defaultText = siteLang === 'fr' ? 
+              'Conversion automatique apparaîtra ici...' : 
+              'Automatic conversion will appear here...';
+            phoneticOutput.textContent = defaultText;
+            phoneticOutput.style.color = '#666';
+          }
+        });
+      }
+    });
 
 const infoTexts = {
   fr: {
@@ -477,84 +731,88 @@ const phrases = {
   fr: [
     // Contact initial départ
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, ${flightType.toUpperCase()} au parking [position], destination ${arr}, demande autorisation de départ.`;
-      if (chartsStatus === 'outdated') base += ` Attention : cartes non à jour.`;
+      let base = `Tour ${dep}, ${flightType.toUpperCase()} au parking [position], destination ${arr}, demande autorisation de départ, ${callsign || "Victor Juliet Zero Five"}.`;
+      if (chartsStatus === 'outdated') base = base.replace('.', ', attention : cartes non à jour.');
       return `<span class="phrase">${base}</span>`;
     },
     // Réponse autorisation
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau demandé";
-      let base = `${callsign || "Victor Juliet Zero Five"}, autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage.`;
+      let base = `Autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage, ${callsign || "Victor Juliet Zero Five"}.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Demande roulage
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}.`;
-      if (flightType === 'ifr') base += ` Plan de vol IFR activé.`;
+      let base = `Tour ${dep}, prêt pour roulage piste ${rDep}, destination ${arr}`;
+      if (flightType === 'ifr') base += `, plan de vol IFR activé`;
+      base += `, ${callsign || "Victor Juliet Zero Five"}.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Prêt décollage
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour décollage immédiat piste ${rDep}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, prêt pour décollage immédiat piste ${rDep}, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     // Contact départ
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau autorisé";
-      let base = `Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, décollé piste ${rDep}, montée ${altText}, ${flightType.toUpperCase()} vers ${arr}.`;
-      if (chartsStatus === 'outdated' && flightType === 'ifr') base += ` URGENT : cartes non à jour, demande vecteurs radar.`;
+      let base = `Départ ${dep}, décollé piste ${rDep}, montée ${altText}, ${flightType.toUpperCase()} vers ${arr}`;
+      if (chartsStatus === 'outdated' && flightType === 'ifr') base += `, URGENT : cartes non à jour, demande vecteurs radar`;
+      base += `, ${callsign || "Victor Juliet Zero Five"}.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Demande changement altitude
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let reqText = alt ? "montée " + (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "assignation d'altitude";
-      return `<span class="phrase">Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande ${reqText}.</span>`;
+      return `<span class="phrase">Départ ${dep}, demande ${reqText}, ${callsign || "Victor Juliet Zero Five"}.</span>`;
     },
     // Contact centre
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
-      let base = `Centre, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} de ${dep} vers ${arr}.`;
-      if (chartsStatus === 'outdated') base += ` Cartes non à jour, demande vecteurs.`;
+      let base = `Centre, ${altText}, ${flightType.toUpperCase()} de ${dep} vers ${arr}`;
+      if (chartsStatus === 'outdated') base += `, cartes non à jour, demande vecteurs`;
+      base += `, ${callsign || "Victor Juliet Zero Five"}.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Demande cap direct
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let capText = deg ? "cap " + deg + "° direct" : "cap direct";
       let reason = chartsStatus === 'outdated' ? " (cartes non à jour)" : " au lieu du point de navigation";
-      return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande ${capText}${reason}.</span>`;
+      return `<span class="phrase">Centre, demande ${capText}${reason}, ${callsign || "Victor Juliet Zero Five"}.</span>`;
     },
     // Contact approche
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
-      let base = `Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, ${altText}, [position], demande approche ${flightType.toUpperCase()} ${arr}.`;
-      if (chartsStatus === 'outdated') base += ` Cartes obsolètes, demande guidage complet.`;
+      let base = `Approche ${arr}, ${altText}, [position], demande approche ${flightType.toUpperCase()} ${arr}`;
+      if (chartsStatus === 'outdated') base += `, cartes obsolètes, demande guidage complet`;
+      base += `, ${callsign || "Victor Juliet Zero Five"}.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Demande approche directe
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, demande approche directe piste ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Approche ${arr}, demande approche directe piste ${rArr}, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     // Intégration circuit
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${rArr}, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     // Base leg
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, base piste ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, base piste ${rArr}, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     // Finale
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, finale piste ${rArr}, demande clearance atterrissage.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, finale piste ${rArr}, demande clearance atterrissage, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     // Libération piste
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let parkingText = parking ? " parking " + parking : " au parking";
-      return `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, piste ${rArr} dégagée, demande roulage${parkingText}.</span>`;
+      return `<span class="phrase">Tour ${arr}, piste ${rArr} dégagée, demande roulage${parkingText}, ${callsign || "Victor Juliet Zero Five"}.</span>`;
     },
     // Communications générales...
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, test radio.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message reçu.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, test radio, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Say again please, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Speak slower please, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Roger, message reçu, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "niveau actuel";
-      return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, position [position], ${altText}, estimé ${arr} dans [temps].</span>`;
+      return `<span class="phrase">Centre, position [position], ${altText}, estimé ${arr} dans [temps], ${callsign || "Victor Juliet Zero Five"}.</span>`;
     },
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, demande vecteur radar pour l'approche.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ident.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, changement fréquence [fréquence], au revoir.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande priorité pour [raison].</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature du problème], position [position], demande assistance.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [urgence vitale], position [position], [nombre de personnes] personnes à bord.</span>`
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Approche ${arr}, demande vecteur radar pour l'approche, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Ident, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Changement fréquence [fréquence], au revoir, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, demande priorité pour [raison], ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, [nature du problème], position [position], demande assistance, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, [urgence vitale], position [position], [nombre de personnes] personnes à bord, ${callsign || "Victor Juliet Zero Five"}.</span>`
   ],
   en: [
     // Initial departure contact
@@ -627,7 +885,7 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message received.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " feet") : "current level";
+      let altText = alt ? (altType === 'fl' ? 'FL' + alt : alt + " pieds") : "current level";
       return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, position [position], ${altText}, estimating ${arr} in [time].</span>`;
     },
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request radar vector for approach.</span>`,
