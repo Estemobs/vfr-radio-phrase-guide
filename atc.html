@@ -668,7 +668,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
       // Structure EXACTE : Tour + callsign + parking + type + clearance pour + destination + information ATIS
       let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, parking ${parkingDep}, ${flightType.toUpperCase()}, clearance pour ${arr}, information ${atisInfo}`;
-      if (chartsStatus === 'outdated') base += `, cartes non à jour`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -676,7 +675,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr');
       let base = `${callsign || "Victor Juliet Zero Five"}, autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}`;
-      if (chartsStatus === 'outdated') base += `, cartes obsolètes notées`;
       base += ', rappelez prêt pour roulage.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -693,7 +691,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr');
       let base = `Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, décollé piste ${rDep}, montée ${altText}, ${flightType.toUpperCase()} vers ${arr}`;
-      if (chartsStatus === 'outdated' && flightType === 'ifr') base += `, URGENT : cartes non à jour, demande vecteurs radar`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -706,21 +703,18 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr') || "niveau actuel";
       let base = `Centre, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} de ${dep} vers ${arr}`;
-      if (chartsStatus === 'outdated') base += `, cartes non à jour, demande vecteurs`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Demande cap direct
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let capText = deg ? "cap " + deg + "° direct" : "cap direct";
-      let reason = chartsStatus === 'outdated' ? " (cartes non à jour)" : " au lieu du point de navigation";
-      return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande ${capText}${reason}.</span>`;
+      return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande ${capText}.</span>`;
     },
     // Contact approche
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr') || "niveau actuel";
       let base = `Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, ${altText}, [position], demande approche ${flightType.toUpperCase()} ${arr}`;
-      if (chartsStatus === 'outdated') base += `, cartes obsolètes, demande guidage complet`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -757,7 +751,6 @@ const phrases = {
     // Initial departure contact - Correct structure  
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
       let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, at parking ${parkingDep}, ${flightType.toUpperCase()}, clearance for ${arr}, information ${atisInfo}`;
-      if (chartsStatus === 'outdated') base += `, charts not current`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -765,7 +758,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en');
       let base = `${callsign || "Victor Juliet Zero Five"}, cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}`;
-      if (chartsStatus === 'outdated') base += `, outdated charts noted`;
       base += ', report ready for taxi.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -782,7 +774,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en');
       let base = `${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, airborne runway ${rDep}, climbing ${altText}, ${flightType.toUpperCase()} to ${arr}`;
-      if (chartsStatus === 'outdated' && flightType === 'ifr') base += `, URGENT: charts not current, request radar vectors`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
@@ -795,20 +786,17 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en') || "current level";
       let base = `Center, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} from ${dep} to ${arr}.`;
-      if (chartsStatus === 'outdated') base += ` Charts not current, request vectors.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Direct heading request
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let headingText = deg ? "heading " + deg + " degrees direct" : "direct heading";
-      let reason = chartsStatus === 'outdated' ? " (charts not current)" : " instead of navigation point";
-      return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, request ${headingText}${reason}.</span>`;
+      return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, request ${headingText}.</span>`;
     },
     // Approach contact
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en') || "current level";
       let base = `${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, ${altText}, [position], request ${flightType.toUpperCase()} approach ${arr}.`;
-      if (chartsStatus === 'outdated') base += ` Charts outdated, request full guidance.`;
       return `<span class="phrase">${base}</span>`;
     },
     // Direct approach request
