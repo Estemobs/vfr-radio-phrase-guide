@@ -701,7 +701,7 @@ const phrases = {
     },
     // Transition zone de contrôle
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      return `<span class="phrase"><input type="text" placeholder="Nom de la zone (ex: Paris Control)" style="display: inline; width: 200px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, FL<input type="text" placeholder="095" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${flightType.toUpperCase()} to ${arr}.</span>`;
+      return `<span class="phrase"><input type="text" placeholder="Nom de la zone (ex: Paris Control)" style="display: inline; width: 200px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position (facultatif)" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, FL<input type="text" placeholder="095" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${flightType.toUpperCase()} to ${arr}.</span>`;
     },
     // Demande changement altitude
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
@@ -795,7 +795,7 @@ const phrases = {
     },
     // Control zone transition
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      return `<span class="phrase"><input type="text" placeholder="Control zone name (e.g., Paris Control)" style="display: inline; width: 220px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, FL<input type="text" placeholder="095" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${flightType.toUpperCase()} to ${arr}.</span>`;
+      return `<span class="phrase"><input type="text" placeholder="Control zone name (e.g., Paris Control)" style="display: inline; width: 220px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position (optional)" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, FL<input type="text" placeholder="095" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${flightType.toUpperCase()} to ${arr}.</span>`;
     },
     // Altitude change request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
@@ -852,7 +852,7 @@ const stepTitles = {
     () => `<div class="step-title">✈️ En route</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrivée</div>`,
-    null, null, null, null, null, null,
+    null, null, null, null, null, null, null,
     () => `<div class="step-title">📞 Communications générales</div>`,
     null, null,
     () => `<div class="step-title">🚨 Urgences</div>`,
@@ -864,7 +864,7 @@ const stepTitles = {
     () => `<div class="step-title">✈️ Enroute</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrival</div>`,
-    null, null, null, null, null, null,
+    null, null, null, null, null, null, null,
     () => `<div class="step-title">📞 General communications</div>`,
     null, null,
     () => `<div class="step-title">🚨 Emergencies</div>`,
