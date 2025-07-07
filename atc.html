@@ -356,12 +356,6 @@
     <button type="button" id="alt-type-fl" class="alt-type-btn-small" onclick="setAltitudeType('fl')" data-fr="FL" data-en="FL">FL</button>
   </div>
 
-  <label for="leftRight" data-fr="Left or Right (downwind)" data-en="Left or Right (downwind)">Left or Right (downwind)</label>
-  <select id="leftRight" name="leftRight" required>
-    <option value="left" data-fr="Left" data-en="Left">Left</option>
-    <option value="right" data-fr="Right" data-en="Right">Right</option>
-  </select>
-
   <label for="pushDirection" data-fr="Direction repoussage (optionnel)" data-en="Push direction (optional)" style="font-size: 0.9em; color: #666;">Direction repoussage (optionnel)</label>
   <select id="pushDirection" name="pushDirection" style="font-size: 0.9em; padding: 6px;">
     <option value="" data-fr="Non spécifiée" data-en="Not specified">Non spécifiée</option>
@@ -927,7 +921,7 @@ function setAltitudeType(type) {
   
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
-    generatePhrases();
+    generatePhrases(null);
   }
 }
 
@@ -940,7 +934,7 @@ function setFlightType(type) {
   
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
-    generatePhrases();
+    generatePhrases(null);
   }
 }
 
@@ -952,7 +946,7 @@ function setChartsStatus(status) {
   
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
-    generatePhrases();
+    generatePhrases(null);
   }
 }
 
@@ -982,10 +976,6 @@ function setSiteLang(lang) {
   document.querySelector('button[type="submit"]').textContent = document.querySelector('button[type="submit"]').dataset[lang];
   
   // Select options
-  document.querySelectorAll('#leftRight option').forEach(opt => {
-    if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
-  });
-  
   document.querySelectorAll('#pushDirection option').forEach(opt => {
     if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
   });
@@ -997,7 +987,7 @@ function setSiteLang(lang) {
   
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
-    generatePhrases();
+    generatePhrases(null);
   }
 }
 
@@ -1008,7 +998,7 @@ function setCommLang(lang) {
   
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
-    generatePhrases();
+    generatePhrases(null);
   }
 }
 
@@ -1024,7 +1014,7 @@ function generatePhrases(event) {
   const rArr = document.getElementById("runwayArr").value.trim();
   const alt = document.getElementById("altitude").value.trim();
   const deg = document.getElementById("degree").value.trim();
-  const lr = document.getElementById("leftRight").value;
+  const lr = "left"; // Valeur par défaut car le champ leftRight n'existe plus
   const pushDirection = document.getElementById("pushDirection").value;
   const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
