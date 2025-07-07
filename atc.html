@@ -1044,12 +1044,12 @@ function generatePhrases(event) {
 
   let html = "";
   for(let i = 0; i < phraseList.length; i++) {
+    // Afficher le titre de section si il existe
     if (stepList[i]) {
       html += stepList[i]();
     }
-    if (!stepList[i]) {
-      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo)}</details>`;
-    }
+    // Toujours afficher la phrase (que le titre existe ou non)
+    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo)}</details>`;
   }
 
   document.getElementById("output").innerHTML = html;
