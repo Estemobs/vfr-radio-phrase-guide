@@ -454,6 +454,7 @@ const explanations = {
       "Intégration dans le circuit d'aérodrome.",
       "Base leg dans le circuit.",
       "Finale avec clearance d'atterrissage.",
+      "Atterrissage et demande guidage au sol.",
       "Libération de piste et roulage au parking.",
       "Test radio.",
       "Demande de répétition (Say again).",
@@ -480,6 +481,7 @@ const explanations = {
       "Intégration circuit.",
       "Base leg avec demande de confirmation.",
       "Finale avec clearance d'atterrissage.",
+      "Atterrissage et demande guidage au sol.",
       "Libération de piste et roulage au parking.",
       "Test radio.",
       "Demande de répétition (Say again).",
@@ -506,7 +508,8 @@ const explanations = {
       "Confirmation approche assignée.",
       "Intercept localizer ou final.",
       "Finale approche aux instruments.",
-      "Atterrissage et libération de piste.",
+      "Atterrissage et demande guidage au sol.",
+      "Libération de piste et roulage au parking.",
       "Test radio.",
       "Demande de répétition (Say again).",
       "Demande de parler plus lentement.",
@@ -533,6 +536,7 @@ const explanations = {
       "Demande vecteurs pour finale.",
       "Finale avec guidage radar.",
       "Atterrissage et demande guidage au sol.",
+      "Libération de piste et roulage au parking.",
       "Test radio.",
       "Demande de répétition (Say again).",
       "Demande de parler plus lentement.",
@@ -560,6 +564,7 @@ const explanations = {
       "Integration into airport circuit.",
       "Base leg in the circuit.",
       "Final with landing clearance.",
+      "Landing and request ground guidance.",
       "Runway vacation and taxi to parking.",
       "Radio check.",
       "Request for repetition (Say again).",
@@ -586,6 +591,7 @@ const explanations = {
       "Circuit integration.",
       "Base leg with confirmation request.",
       "Final with landing clearance.",
+      "Landing and request ground guidance.",
       "Runway vacation and taxi to parking.",
       "Radio check.",
       "Request for repetition (Say again).",
@@ -607,22 +613,15 @@ const explanations = {
       "Request for flight level change.",
       "Center contact enroute IFR.",
       "Request direct routing (flight plan deviation).",
-      "Initial contact with new control zone (check-in).",
       "IFR approach contact at destination.",
       "Request instrument approach.",
       "Confirmation of assigned approach.",
       "Intercept localizer or final.",
       "Final instrument approach.",
-      "Landing and runway vacation.",
+      "Landing and request ground guidance.",
       "Radio check.",
       "Request for repetition (Say again).",
       "Request to speak slower.",
-      "Confirmation of received instructions.",
-      "Mandatory IFR position report.",
-      "Request IFR radar vector.",
-      "Transponder ident.",
-      "Frequency change.",
-      "Request for emergency priority.",
       "PAN PAN (non-vital emergency).",
       "MAYDAY (vital emergency)."
     ],
@@ -646,6 +645,7 @@ const explanations = {
       "Request vectors to final.",
       "Final with radar guidance.",
       "Landing and request ground guidance.",
+      "Runway vacation and taxi to parking.",
       "Radio check.",
       "Request for repetition (Say again).",
       "Request to speak slower.",
@@ -734,6 +734,11 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, base piste ${rArr}, ${callsign || "Victor Juliet Zero Five"}.</span>`,
     // Finale
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${arr}, finale piste ${rArr}, demande clearance atterrissage, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    // Atterrissage et demande guidage au sol
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let parkingText = parking ? " parking " + parking : " au parking";
+      return `<span class="phrase">Tour ${arr}, atterri, demande guidage au sol${parkingText}, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+    },
     // Libération piste
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let parkingText = parking ? " parking " + parking : " au parking";
@@ -821,6 +826,11 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, turning base runway ${rArr}.</span>`,
     // Final
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, final runway ${rArr}, request landing clearance.</span>`,
+    // Landing and ground guidance
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      let parkingText = parking ? " parking " + parking : " parking";
+      return `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, landed, request ground guidance to${parkingText}.</span>`;
+    },
     // Runway vacation
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let parkingText = parking ? " parking " + parking : " parking";
@@ -842,7 +852,7 @@ const stepTitles = {
     () => `<div class="step-title">✈️ En route</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrivée</div>`,
-    null, null, null, null, null,
+    null, null, null, null, null, null,
     () => `<div class="step-title">📞 Communications générales</div>`,
     null, null,
     () => `<div class="step-title">🚨 Urgences</div>`,
@@ -854,7 +864,7 @@ const stepTitles = {
     () => `<div class="step-title">✈️ Enroute</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrival</div>`,
-    null, null, null, null, null,
+    null, null, null, null, null, null,
     () => `<div class="step-title">📞 General communications</div>`,
     null, null,
     () => `<div class="step-title">🚨 Emergencies</div>`,
