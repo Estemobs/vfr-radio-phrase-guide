@@ -375,7 +375,7 @@
 
 <script>
 let siteLang = 'fr';
-let commLang = 'en';
+let commLang = 'fr';  // FRANÇAIS par défaut pour les communications radio
 let flightType = 'ifr';
 let chartsStatus = 'outdated';
 let altitudeType = 'feet';
@@ -664,9 +664,10 @@ const explanations = {
 
 const phrases = {
   fr: [
-    // Contact initial départ - Structure correcte
+    // Contact initial départ - PHRASÉOLOGIE EXACTE selon demande utilisateur
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
-      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, place de parking ${parkingDep}, ${flightType.toUpperCase()}, clearance pour ${arr}, information ${atisInfo}`;
+      // Structure EXACTE : Tour + callsign + parking + type + clearance pour + destination + information ATIS
+      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, parking ${parkingDep}, ${flightType.toUpperCase()}, clearance pour ${arr}, information ${atisInfo}`;
       if (chartsStatus === 'outdated') base += `, cartes non à jour`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
@@ -674,7 +675,9 @@ const phrases = {
     // Réponse autorisation ATC
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr');
-      let base = `${callsign || "Victor Juliet Zero Five"}, autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage.`;
+      let base = `${callsign || "Victor Juliet Zero Five"}, autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}`;
+      if (chartsStatus === 'outdated') base += `, cartes obsolètes notées`;
+      base += ', rappelez prêt pour roulage.';
       return `<span class="phrase">${base}</span>`;
     },
     // Demande roulage
@@ -761,7 +764,10 @@ const phrases = {
     // Clearance response ATC
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en');
-      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}, report ready for taxi.</span>`;
+      let base = `${callsign || "Victor Juliet Zero Five"}, cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}`;
+      if (chartsStatus === 'outdated') base += `, outdated charts noted`;
+      base += ', report ready for taxi.';
+      return `<span class="phrase">${base}</span>`;
     },
     // Taxi request
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
@@ -1051,7 +1057,7 @@ function generatePhrases(event) {
 
 // Initialisation
 setSiteLang('fr');
-setCommLang('en');
+setCommLang('fr');  // FRANÇAIS par défaut pour les communications radio
 setFlightType('ifr');
 setChartsStatus('outdated');
 setAltitudeType('feet');
