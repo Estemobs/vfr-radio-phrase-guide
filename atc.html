@@ -456,7 +456,7 @@ const explanations = {
       "Push and start avec direction facing (réponse).",
       "Demande de roulage.",
       "Roulage vers piste avec itinéraire (réponse).",
-      "Demande de décollage immédiat.",
+      "Prêt pour décollage.",
       "Contact avec l'approche/départ après décollage.",
       "Demande de changement d'altitude.",
       "Contact avec le centre de contrôle en route.",
@@ -486,7 +486,7 @@ const explanations = {
       "Push and start avec direction facing (réponse).",
       "Demande de roulage.",
       "Roulage vers piste avec itinéraire (réponse).",
-      "Demande de décollage immédiat.",
+      "Prêt pour décollage.",
       "Contact départ, demande vecteurs.",
       "Demande de changement d'altitude.",
       "Contact centre, demande caps directs.",
@@ -578,7 +578,7 @@ const explanations = {
       "Push and start with facing direction (response).",
       "Ready for taxi.",
       "Taxi to runway with route (response).",
-      "Request for immediate takeoff.",
+      "Ready for takeoff.",
       "Contact with approach/departure after takeoff.",
       "Request for altitude change.",
       "Contact with area control center enroute.",
@@ -608,7 +608,7 @@ const explanations = {
       "Push and start with facing direction (response).",
       "Ready for taxi.",
       "Taxi to runway with route (response).",
-      "Request for immediate takeoff.",
+      "Ready for takeoff.",
       "Departure contact with request for vectors.",
       "Request for altitude change.",
       "Center contact with heading request.",
@@ -638,7 +638,6 @@ const explanations = {
       "Push and start with facing direction (response).",
       "Ready for taxi.",
       "Taxi to runway with route (response).",
-      "Ready for IFR takeoff.",
       "Ready for IFR takeoff.",
       "Departure contact after IFR takeoff.",
       "Request flight level change.",
@@ -729,7 +728,7 @@ const phrases = {
       return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, taxi for runway ${rDep} via <input type="text" id="taxiRouteInput" placeholder="A, B2, holding point..." style="display: inline; width: 300px; padding: 4px; margin: 0 4px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Prêt décollage
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour décollage immédiat piste ${rDep}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for takeoff runway ${rDep}.</span>`,
     // Contact départ
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr');
@@ -822,7 +821,7 @@ const phrases = {
       return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, taxi for runway ${rDep} via <input type="text" id="taxiRouteInputEn" placeholder="A, B2, holding point..." style="display: inline; width: 300px; padding: 4px; margin: 0 4px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Ready for takeoff
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for immediate takeoff runway ${rDep}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for takeoff runway ${rDep}.</span>`,
     // Departure contact
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en');
@@ -886,7 +885,7 @@ const phrases = {
 const stepTitles = {
   fr: [
     () => `<div class="step-title">🛫 Départ</div>`,
-    null, null, null, null, null,
+    null, null, null, null, null, null,
     () => `<div class="step-title">✈️ En route</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrivée</div>`,
@@ -898,7 +897,7 @@ const stepTitles = {
   ],
   en: [
     () => `<div class="step-title">🛫 Departure</div>`,
-    null, null, null, null, null,
+    null, null, null, null, null, null,
     () => `<div class="step-title">✈️ Enroute</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrival</div>`,
