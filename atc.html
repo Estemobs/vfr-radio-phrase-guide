@@ -443,7 +443,8 @@ const explanations = {
   fr: {
     vfr_updated: [
       "Premier contact avec la tour de contrôle pour demande de départ VFR.",
-      "Réponse à l'autorisation de départ et confirmation.",
+      "Confirmation et répétition des éléments de clairance reçus.",
+      "Demande de repoussage et démarrage moteurs.",
       "Demande de roulage vers la piste.",
       "Demande de décollage immédiat.",
       "Contact avec l'approche/départ après décollage.",
@@ -470,7 +471,8 @@ const explanations = {
     ],
     vfr_outdated: [
       "Premier contact VFR.",
-      "Réponse à l'autorisation.",
+      "Confirmation et répétition des éléments de clairance reçus.",
+      "Demande de repoussage et démarrage moteurs.",
       "Demande de roulage vers la piste.",
       "Demande de décollage immédiat.",
       "Contact départ, demande vecteurs.",
@@ -497,7 +499,8 @@ const explanations = {
     ],
     ifr_updated: [
       "Demande de clairance IFR au départ.",
-      "Confirmation clairance IFR reçue.",
+      "Confirmation et répétition des éléments de clairance reçus.",
+      "Demande de repoussage et démarrage moteurs.",
       "Demande de roulage avec clairance IFR.",
       "Prêt pour décollage IFR.",
       "Contact départ après décollage IFR.",
@@ -524,8 +527,8 @@ const explanations = {
     ],
     ifr_outdated: [
       "Demande clairance IFR.",
-      "Confirmation clairance.",
       "Confirmation et répétition des éléments de clairance reçus.",
+      "Demande de repoussage et démarrage moteurs.",
       "Demande roulage.",
       "Prêt décollage IFR.",
       "Contact départ IFR.",
@@ -554,7 +557,8 @@ const explanations = {
   en: {
     vfr_updated: [
       "Initial contact with tower for VFR departure clearance.",
-      "Response to departure clearance and confirmation.",
+      "Readback and confirmation of clearance elements received.",
+      "Request for push and start.",
       "Request for taxi to runway.",
       "Request for immediate takeoff.",
       "Contact with approach/departure after takeoff.",
@@ -581,7 +585,8 @@ const explanations = {
     ],
     vfr_outdated: [
       "Initial VFR contact.",
-      "Clearance response from ATC.",
+      "Readback and confirmation of clearance elements received.",
+      "Request for push and start.",
       "Request for taxi to runway.",
       "Request for immediate takeoff.",
       "Departure contact with request for vectors.",
@@ -608,7 +613,8 @@ const explanations = {
     ],
     ifr_updated: [
       "Request for IFR clearance at departure.",
-      "IFR clearance confirmation received.",
+      "Readback and confirmation of clearance elements received.",
+      "Request for push and start.",
       "Request for taxi with IFR clearance.",
       "Ready for IFR takeoff.",
       "Departure contact after IFR takeoff.",
@@ -635,8 +641,8 @@ const explanations = {
     ],
     ifr_outdated: [
       "Request IFR clearance.",
-      "Clearance confirmation.",
       "Readback and confirmation of clearance elements received.",
+      "Request for push and start.",
       "Request taxi.",
       "Ready IFR takeoff.",
       "IFR departure contact.",
@@ -673,13 +679,6 @@ const phrases = {
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
-    // Réponse autorisation ATC
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = formatAltitude(alt, altType, 'fr');
-      let base = `${callsign || "Victor Juliet Zero Five"}, autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}`;
-      base += ', rappelez prêt pour roulage.';
-      return `<span class="phrase">${base}</span>`;
-    },
     // Confirmation répétition clairance (readback)
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'fr');
@@ -687,6 +686,8 @@ const phrases = {
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
+    // Demande push and start
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande repoussage et démarrage moteurs.</span>`,
     // Demande roulage
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}`;
@@ -763,13 +764,6 @@ const phrases = {
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
-    // Clearance response ATC
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = formatAltitude(alt, altType, 'en');
-      let base = `${callsign || "Victor Juliet Zero Five"}, cleared ${flightType.toUpperCase()} to ${arr}, ${altText}, squawk ${squawk || "1200"}`;
-      base += ', report ready for taxi.';
-      return `<span class="phrase">${base}</span>`;
-    },
     // Readback confirmation
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let altText = formatAltitude(alt, altType, 'en');
@@ -777,6 +771,8 @@ const phrases = {
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
+    // Push and start request
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for push and start.</span>`,
     // Taxi request
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for taxi runway ${rDep}, destination ${arr}`;
@@ -849,7 +845,7 @@ const phrases = {
 const stepTitles = {
   fr: [
     () => `<div class="step-title">🛫 Départ</div>`,
-    null, null, null,
+    null, null,
     () => `<div class="step-title">✈️ En route</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrivée</div>`,
@@ -861,7 +857,7 @@ const stepTitles = {
   ],
   en: [
     () => `<div class="step-title">🛫 Departure</div>`,
-    null, null, null,
+    null, null,
     () => `<div class="step-title">✈️ Enroute</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrival</div>`,
