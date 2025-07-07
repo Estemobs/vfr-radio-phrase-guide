@@ -323,6 +323,12 @@
   <label for="departure" data-fr="Départ (nom de l'aéroport)" data-en="Departure (airport name)">Départ (nom de l'aéroport)</label>
   <input type="text" id="departure" name="departure" required placeholder="Ex: Paris Charles-de-Gaulle" />
 
+  <label for="parkingDep" data-fr="Place de parking départ (obligatoire)" data-en="Departure parking spot (required)">Place de parking départ (obligatoire)</label>
+  <input type="text" id="parkingDep" name="parkingDep" required placeholder="Ex: A5, G23, Terminal 2E" />
+
+  <label for="atisInfo" data-fr="Information ATIS (obligatoire)" data-en="ATIS information (required)">Information ATIS (obligatoire)</label>
+  <input type="text" id="atisInfo" name="atisInfo" required placeholder="Ex: Information Alpha, Bravo, Charlie..." maxlength="1" />
+
   <label for="arrival" data-fr="Arrivée (nom de l'aéroport)" data-en="Arrival (airport name)">Arrivée (nom de l'aéroport)</label>
   <input type="text" id="arrival" name="arrival" required placeholder="Ex: Paris Orly" />
 
@@ -351,6 +357,12 @@
     <option value="left" data-fr="Left" data-en="Left">Left</option>
     <option value="right" data-fr="Right" data-en="Right">Right</option>
   </select>
+
+  <label for="parkingDep" data-fr="Place de parking au départ (obligatoire)" data-en="Departure parking spot (required)">Place de parking au départ (obligatoire)</label>
+  <input type="text" id="parkingDep" name="parkingDep" required placeholder="Ex: A12, Terminal 2" />
+
+  <label for="atisInfo" data-fr="Information ATIS (obligatoire)" data-en="ATIS Information (required)">Information ATIS (obligatoire)</label>
+  <input type="text" id="atisInfo" name="atisInfo" required placeholder="Ex: Information Alpha, Bravo, Charlie..." />
 
   <label for="parking" data-fr="Place de parking à l'arrivée - optionnel" data-en="Arrival parking spot - optional">Place de parking à l'arrivée - optionnel</label>
   <input type="text" id="parking" name="parking" placeholder="Ex: G23 (laissez vide si inconnu)" />
@@ -654,10 +666,12 @@ const explanations = {
 
 const phrases = {
   fr: [
-    // Contact initial départ
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let base = `Tour ${dep}, ${flightType.toUpperCase()} au parking [position], destination ${arr}, demande autorisation de départ, ${callsign || "Victor Juliet Zero Five"}.`;
-      if (chartsStatus === 'outdated') base = base.replace('.', ', attention : cartes non à jour.');
+    // Contact initial départ - Parking de départ et ATIS obligatoires
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+      let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, au parking ${parkingDep}, information ${atisInfo}, destination ${arr}, demande autorisation de départ ${flightType.toUpperCase()}`;
+      if (rDep) base += `, piste ${rDep}`;
+      if (chartsStatus === 'outdated') base += `, attention : cartes non à jour`;
+      base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Réponse autorisation
@@ -740,10 +754,12 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, [urgence vitale], position [position], [nombre de personnes] personnes à bord, ${callsign || "Victor Juliet Zero Five"}.</span>`
   ],
   en: [
-    // Initial departure contact
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ${flightType.toUpperCase()} at parking [position], destination ${arr}, request departure clearance.`;
-      if (chartsStatus === 'outdated') base += ` Charts not current.`;
+    // Initial departure contact - Parking and ATIS required
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+      let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, at parking ${parkingDep}, information ${atisInfo}, destination ${arr}, request ${flightType.toUpperCase()} departure clearance`;
+      if (rDep) base += `, runway ${rDep}`;
+      if (chartsStatus === 'outdated') base += `, charts not current`;
+      base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Clearance response
@@ -942,6 +958,8 @@ function generatePhrases(event) {
 
   let callsign = document.getElementById("callsign").value.trim();
   const depName = document.getElementById("departure").value.trim();
+  const parkingDep = document.getElementById("parkingDep").value.trim();
+  const atisInfo = document.getElementById("atisInfo").value.trim();
   const arrName = document.getElementById("arrival").value.trim();
   const rDep = document.getElementById("runwayDep").value.trim();
   const rArr = document.getElementById("runwayArr").value.trim();
@@ -950,6 +968,40 @@ function generatePhrases(event) {
   const lr = document.getElementById("leftRight").value;
   const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
+
+  // Validation des champs obligatoires
+  if (!callsign) {
+    alert(siteLang === 'fr' ? 'Le callsign est obligatoire.' : 'Callsign is required.');
+    return;
+  }
+  if (!depName) {
+    alert(siteLang === 'fr' ? 'L\'aéroport de départ est obligatoire.' : 'Departure airport is required.');
+    return;
+  }
+  if (!parkingDep) {
+    alert(siteLang === 'fr' ? 'La place de parking au départ est obligatoire.' : 'Departure parking spot is required.');
+    return;
+  }
+  if (!atisInfo) {
+    alert(siteLang === 'fr' ? 'L\'information ATIS est obligatoire.' : 'ATIS information is required.');
+    return;
+  }
+  if (!arrName) {
+    alert(siteLang === 'fr' ? 'L\'aéroport d\'arrivée est obligatoire.' : 'Arrival airport is required.');
+    return;
+  }
+  if (!rDep) {
+    alert(siteLang === 'fr' ? 'La piste de départ est obligatoire.' : 'Departure runway is required.');
+    return;
+  }
+  if (!rArr) {
+    alert(siteLang === 'fr' ? 'La piste d\'arrivée est obligatoire.' : 'Arrival runway is required.');
+    return;
+  }
+  if (!alt) {
+    alert(siteLang === 'fr' ? 'L\'altitude est obligatoire.' : 'Altitude is required.');
+    return;
+  }
 
   const key = `${flightType}_${chartsStatus}`;
   const phraseList = phrases[commLang];
@@ -962,7 +1014,7 @@ function generatePhrases(event) {
       html += stepList[i]();
     }
     if (!stepList[i]) {
-      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus)}</details>`;
+      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo)}</details>`;
     }
   }
 
