@@ -36,6 +36,33 @@
     background: #dc3545;
     color: #fff;
   }
+  .options-switch {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+  }
+  .options-switch button {
+    background: #e9ecef;
+    color: #495057;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .options-switch button.active {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+  }
+  .options-switch button:hover:not(.active) {
+    background: #f8f9fa;
+  }
   .back-button {
     display: inline-block;
     margin-bottom: 20px;
@@ -129,16 +156,29 @@
   </div>
 </div>
 
+<div class="options-switch">
+  <div>
+    <span>Type de vol :</span>
+    <button id="flight-vfr" class="active" onclick="setFlightType('vfr')" type="button">VFR</button>
+    <button id="flight-ifr" onclick="setFlightType('ifr')" type="button">IFR</button>
+  </div>
+  <div>
+    <span>Cartes :</span>
+    <button id="charts-updated" class="active" onclick="setChartsStatus('updated')" type="button">À jour</button>
+    <button id="charts-outdated" onclick="setChartsStatus('outdated')" type="button">Pas à jour</button>
+  </div>
+</div>
+
 <h1 id="main-title">Communications ATC - Guide des phrases radio VFR</h1>
 
 <div class="info-box">
   <strong>ℹ️ Information importante :</strong><br>
-  Les communications ATC suivent des procédures strictes. Utilisez toujours les phrases officielles et respectez les instructions du contrôleur. En cas de doute, n'hésitez pas à demander des clarifications.
+  <span id="info-text">Les communications ATC suivent des procédures strictes. Utilisez toujours les phrases officielles et respectez les instructions du contrôleur. En cas de doute, n'hésitez pas à demander des clarifications.</span>
 </div>
 
 <form id="atcForm" onsubmit="generatePhrases(event)">
-  <label for="callsign" data-fr="Callsign (obligatoire)" data-en="Callsign (required)">Callsign (obligatoire)</label>
-  <input type="text" id="callsign" name="callsign" required placeholder="Ex: Victor Juliet Zero Five" />
+  <label for="callsign" data-fr="Callsign (optionnel)" data-en="Callsign (optional)">Callsign (optionnel)</label>
+  <input type="text" id="callsign" name="callsign" placeholder="Ex: Victor Juliet Zero Five" />
 
   <label for="departure" data-fr="Départ (nom de l'aéroport)" data-en="Departure (airport name)">Départ (nom de l'aéroport)</label>
   <input type="text" id="departure" name="departure" required placeholder="Ex: Paris Charles-de-Gaulle" />
@@ -146,22 +186,29 @@
   <label for="arrival" data-fr="Arrivée (nom de l'aéroport)" data-en="Arrival (airport name)">Arrivée (nom de l'aéroport)</label>
   <input type="text" id="arrival" name="arrival" required placeholder="Ex: Paris Orly" />
 
-  <label for="flightLevel" data-fr="Niveau de vol demandé" data-en="Requested flight level">Niveau de vol demandé</label>
-  <select id="flightLevel" name="flightLevel" required>
-    <option value="2000">2000 pieds</option>
-    <option value="2500">2500 pieds</option>
-    <option value="3000">3000 pieds</option>
-    <option value="3500">3500 pieds</option>
-    <option value="4000">4000 pieds</option>
-    <option value="4500">4500 pieds</option>
-    <option value="5000">5000 pieds</option>
+  <label for="runwayDep" data-fr="Piste départ" data-en="Departure runway">Piste départ</label>
+  <input type="text" id="runwayDep" name="runwayDep" required placeholder="Ex: 27" />
+
+  <label for="runwayArr" data-fr="Piste arrivée" data-en="Arrival runway">Piste arrivée</label>
+  <input type="text" id="runwayArr" name="runwayArr" required placeholder="Ex: 09" />
+
+  <label for="degree" data-fr="Cap (degré)" data-en="Heading (degree)">Cap (degré)</label>
+  <input type="number" id="degree" name="degree" required placeholder="Ex: 045" min="0" max="359" />
+
+  <label for="altitude" data-fr="Altitude (pieds)" data-en="Altitude (feet)">Altitude (pieds)</label>
+  <input type="number" id="altitude" name="altitude" placeholder="Ex: 3500" />
+
+  <label for="leftRight" data-fr="Left or Right (downwind)" data-en="Left or Right (downwind)">Left or Right (downwind)</label>
+  <select id="leftRight" name="leftRight" required>
+    <option value="left" data-fr="Left" data-en="Left">Left</option>
+    <option value="right" data-fr="Right" data-en="Right">Right</option>
   </select>
+
+  <label for="parking" data-fr="Place de parking à l'arrivée" data-en="Arrival parking spot">Place de parking à l'arrivée</label>
+  <input type="text" id="parking" name="parking" placeholder="Ex: G23" />
 
   <label for="squawk" data-fr="Code transpondeur (si connu)" data-en="Squawk code (if known)">Code transpondeur (si connu)</label>
   <input type="text" id="squawk" name="squawk" placeholder="Ex: 1200" maxlength="4" />
-
-  <label for="runway" data-fr="Piste" data-en="Runway">Piste</label>
-  <input type="text" id="runway" name="runway" placeholder="Ex: 27" />
 
   <button type="submit" data-fr="Générer les phrases ATC" data-en="Generate ATC phrases">Générer les phrases ATC</button>
 </form>
@@ -177,79 +224,139 @@ const explanations = {
     "Premier contact avec la tour de contrôle pour demande de départ.",
     "Réponse à l'autorisation de départ et confirmation.",
     "Demande de roulage vers la piste.",
-    "Confirmation de la clairance de décollage.",
+    "Demande de décollage immédiat.",
     "Contact avec l'approche/départ après décollage.",
+    "Demande de changement d'altitude.",
     "Contact avec le centre de contrôle en route.",
+    "Demande de cap direct au lieu d'un point de navigation.",
     "Premier contact avec l'approche de destination.",
-    "Demande d'approche et atterrissage.",
-    "Confirmation de l'atterrissage et libération de piste.",
-    "Contact avec la tour au sol après atterrissage."
+    "Demande d'approche directe.",
+    "Intégration dans le circuit d'aérodrome.",
+    "Base leg dans le circuit.",
+    "Finale avec clearance d'atterrissage.",
+    "Libération de piste et roulage au parking.",
+    "Test radio.",
+    "Demande de répétition (Say again).",
+    "Demande de parler plus lentement.",
+    "Confirmation de réception d'instructions.",
+    "Report de position en route.",
+    "Demande de vecteur radar.",
+    "Ident transpondeur.",
+    "Changement de fréquence.",
+    "Demande d'urgence priorité.",
+    "PAN PAN (urgence non vitale).",
+    "MAYDAY (urgence vitale)."
   ],
   en: [
     "Initial contact with tower for departure clearance.",
     "Response to departure clearance and confirmation.",
     "Request for taxi to runway.",
-    "Takeoff clearance confirmation.",
+    "Request for immediate takeoff.",
     "Contact with approach/departure after takeoff.",
+    "Request for altitude change.",
     "Contact with area control center enroute.",
+    "Request for direct heading instead of navigation point.",
     "Initial contact with destination approach.",
-    "Approach and landing request.",
-    "Landing confirmation and runway vacation.",
-    "Ground contact with tower after landing."
+    "Request for direct approach.",
+    "Integration into airport circuit.",
+    "Base leg in the circuit.",
+    "Final with landing clearance.",
+    "Runway vacation and taxi to parking.",
+    "Radio check.",
+    "Request for repetition (Say again).",
+    "Request to speak slower.",
+    "Confirmation of received instructions.",
+    "Position report enroute.",
+    "Request for radar vector.",
+    "Transponder ident.",
+    "Frequency change.",
+    "Request for emergency priority.",
+    "PAN PAN (non-vital emergency).",
+    "MAYDAY (vital emergency)."
   ]
 };
 
 const phrases = {
   fr: [
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Tour ${dep}, ${callsign}, VFR, parking [position], destination ${arr}, demande autorisation de départ.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, autorisé VFR vers ${arr}, niveau ${level} pieds, transpondeur ${squawk || "1200"}, appelez prêt pour roulage.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, prêt pour roulage, destination ${arr}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, autorisé décollage piste ${runway || "XX"}, après décollage cap [XXX], contactez départ [fréquence].</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Départ ${dep}, ${callsign}, décollé de ${dep}, montée ${level} pieds, VFR vers ${arr}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Centre, ${callsign}, niveau ${level} pieds, VFR de ${dep} vers ${arr}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Approche ${arr}, ${callsign}, niveau ${level} pieds, [position], demande approche VFR ${arr}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, approche ${arr}, rappelez en vue du terrain, piste en service ${runway || "XX"}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Tour ${arr}, ${callsign}, atterri piste ${runway || "XX"}, demande roulage parking.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, roulez parking [position] via [voies de circulation], contactez sol [fréquence].</span>`
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, VFR au parking [position], destination ${arr}, demande autorisation de départ.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, autorisé VFR vers ${arr}, ${alt ? alt + " pieds" : "niveau demandé"}, transpondeur ${squawk || "1200"}, rappelez prêt pour roulage.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour décollage immédiat piste ${rDep}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, décollé piste ${rDep}, montée ${alt ? alt + " pieds" : "niveau autorisé"}, VFR vers ${arr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande montée ${alt ? alt + " pieds" : "niveau supérieur"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, niveau ${alt ? alt + " pieds" : "niveau actuel"}, VFR de ${dep} vers ${arr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande cap ${deg}° direct au lieu du point de navigation.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, ${alt ? alt + " pieds" : "niveau actuel"}, [position], demande approche VFR ${arr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, demande approche directe piste ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, base piste ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, finale piste ${rArr}, demande clearance atterrissage.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${arr}, ${callsign || "Victor Juliet Zero Five"}, piste ${rArr} dégagée, demande roulage parking${parking ? " " + parking : ""}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, test radio.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message reçu.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, position [position], ${alt ? alt + " pieds" : "niveau actuel"}, estimé ${arr} dans [temps].</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Approche ${arr}, ${callsign || "Victor Juliet Zero Five"}, demande vecteur radar pour l'approche.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ident.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, changement fréquence [fréquence], au revoir.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande priorité pour [raison].</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature du problème], position [position], demande assistance.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [urgence vitale], position [position], [nombre de personnes] personnes à bord.</span>`
   ],
   en: [
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${dep} Tower, ${callsign}, VFR, parking [position], destination ${arr}, request departure clearance.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, cleared VFR to ${arr}, ${level} feet, squawk ${squawk || "1200"}, report ready for taxi.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, ready for taxi, destination ${arr}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, cleared for takeoff runway ${runway || "XX"}, after departure heading [XXX], contact departure [frequency].</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${dep} Departure, ${callsign}, airborne from ${dep}, climbing ${level} feet, VFR to ${arr}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">Center, ${callsign}, level ${level} feet, VFR from ${dep} to ${arr}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${arr} Approach, ${callsign}, ${level} feet, [position], request VFR approach ${arr}.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, ${arr} approach, report field in sight, runway ${runway || "XX"} in use.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${arr} Tower, ${callsign}, landed runway ${runway || "XX"}, request taxi to parking.</span>`,
-    (dep, arr, callsign, level, squawk, runway) => `<span class="phrase">${callsign}, taxi to parking [position] via [taxiways], contact ground [frequency].</span>`
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, VFR at parking [position], destination ${arr}, request departure clearance.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, cleared VFR to ${arr}, ${alt ? alt + " feet" : "requested level"}, squawk ${squawk || "1200"}, report ready for taxi.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for taxi runway ${rDep}, destination ${arr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for immediate takeoff runway ${rDep}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, airborne runway ${rDep}, climbing ${alt ? alt + " feet" : "cleared level"}, VFR to ${arr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Departure, ${callsign || "Victor Juliet Zero Five"}, request climb to ${alt ? alt + " feet" : "higher level"}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, level ${alt ? alt + " feet" : "current level"}, VFR from ${dep} to ${arr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, request heading ${deg}° direct instead of navigation point.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, ${alt ? alt + " feet" : "current level"}, [position], request VFR approach ${arr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request direct approach runway ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, entering ${lr} downwind runway ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, turning base runway ${rArr}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, final runway ${rArr}, request landing clearance.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Tower, ${callsign || "Victor Juliet Zero Five"}, runway ${rArr} vacated, request taxi to parking${parking ? " " + parking : ""}.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, radio check.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, Roger, message received.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, position [position], ${alt ? alt + " feet" : "current level"}, estimating ${arr} in [time].</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${arr} Approach, ${callsign || "Victor Juliet Zero Five"}, request radar vector for approach.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ident.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, frequency change to [frequency], good day.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, request priority for [reason].</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature of problem], position [position], request assistance.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [vital emergency], position [position], [number] souls on board.</span>`
   ]
 };
 
 const stepTitles = {
   fr: [
     () => `<div class="step-title">🛫 Départ</div>`,
-    null,
-    null,
-    null,
+    null, null, null,
     () => `<div class="step-title">✈️ En route</div>`,
-    null,
+    null, null, null,
     () => `<div class="step-title">🛬 Arrivée</div>`,
-    null,
-    null,
-    null
+    null, null, null, null, null,
+    () => `<div class="step-title">📞 Communications générales</div>`,
+    null, null, null, null, null, null, null,
+    () => `<div class="step-title">🚨 Urgences</div>`,
+    null, null
   ],
   en: [
     () => `<div class="step-title">🛫 Departure</div>`,
-    null,
-    null,
-    null,
+    null, null, null,
     () => `<div class="step-title">✈️ Enroute</div>`,
-    null,
+    null, null, null,
     () => `<div class="step-title">🛬 Arrival</div>`,
-    null,
-    null,
-    null
+    null, null, null, null, null,
+    () => `<div class="step-title">📞 General communications</div>`,
+    null, null, null, null, null, null, null,
+    () => `<div class="step-title">🚨 Emergencies</div>`,
+    null, null
   ]
 };
 
@@ -266,6 +373,11 @@ function setSiteLang(lang) {
     if (label.dataset[lang]) label.textContent = label.dataset[lang];
   });
   document.querySelector('button[type="submit"]').textContent = document.querySelector('button[type="submit"]').dataset[lang];
+  
+  // Select options
+  document.querySelectorAll('#leftRight option').forEach(opt => {
+    if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
+  });
   
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
@@ -287,17 +399,16 @@ function setCommLang(lang) {
 function generatePhrases(event) {
   if(event) event.preventDefault();
 
-  const callsign = document.getElementById("callsign").value.trim();
+  let callsign = document.getElementById("callsign").value.trim();
   const depName = document.getElementById("departure").value.trim();
   const arrName = document.getElementById("arrival").value.trim();
-  const level = document.getElementById("flightLevel").value;
+  const rDep = document.getElementById("runwayDep").value.trim();
+  const rArr = document.getElementById("runwayArr").value.trim();
+  const alt = document.getElementById("altitude").value.trim();
+  const deg = document.getElementById("degree").value.trim();
+  const lr = document.getElementById("leftRight").value;
+  const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
-  const runway = document.getElementById("runway").value.trim();
-
-  if (!callsign) {
-    alert(siteLang === 'fr' ? 'Le callsign est obligatoire pour les communications ATC.' : 'Callsign is required for ATC communications.');
-    return;
-  }
 
   const phraseList = phrases[commLang];
   const explainList = explanations[siteLang];
@@ -309,7 +420,7 @@ function generatePhrases(event) {
       html += stepList[i]();
     }
     if (!stepList[i]) {
-      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, callsign, level, squawk, runway)}</details>`;
+      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk)}</details>`;
     }
   }
 
