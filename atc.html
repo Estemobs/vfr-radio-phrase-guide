@@ -41,27 +41,19 @@
     justify-content: center;
     gap: 16px;
     margin-bottom: 16px;
-    padding: 10px;
-    background: #fff;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
   }
   .options-switch button {
-    background: #e9ecef;
-    color: #495057;
-    border: 1px solid #ced4da;
+    background: #fce8e6;
+    color: #dc3545;
+    border: 1px solid #dc3545;
     border-radius: 4px;
     padding: 6px 14px;
     font-weight: bold;
     cursor: pointer;
   }
   .options-switch button.active {
-    background: #007bff;
+    background: #dc3545;
     color: #fff;
-    border-color: #007bff;
-  }
-  .options-switch button:hover:not(.active) {
-    background: #f8f9fa;
   }
   .back-button {
     display: inline-block;
@@ -218,62 +210,245 @@
 <script>
 let siteLang = 'fr';
 let commLang = 'en';
+let flightType = 'vfr';
+let chartsStatus = 'updated';
+
+const infoTexts = {
+  fr: {
+    vfr_updated: "Communications VFR avec ATC. Utilisez les phrases officielles et respectez les instructions du contrôleur. En cas de doute, demandez des clarifications.",
+    vfr_outdated: "Communications VFR avec ATC - cartes non à jour. Privilégiez les demandes de caps directs plutôt que les points de navigation. Signalez vos cartes non mises à jour.",
+    ifr_updated: "Communications IFR avec ATC. Procédures strictes obligatoires. Respectez exactement les clairances et les altitudes assignées. Utilisez la phraséologie standard.",
+    ifr_outdated: "Communications IFR avec ATC - cartes non à jour. ATTENTION : Signalez immédiatement vos cartes obsolètes. Demandez des vecteurs radar ou caps directs."
+  },
+  en: {
+    vfr_updated: "VFR communications with ATC. Use official phraseology and follow controller instructions. When in doubt, ask for clarification.",
+    vfr_outdated: "VFR communications with ATC - charts not current. Prefer direct heading requests over navigation points. Report your outdated charts.",
+    ifr_updated: "IFR communications with ATC. Strict procedures mandatory. Follow clearances and assigned altitudes exactly. Use standard phraseology.",
+    ifr_outdated: "IFR communications with ATC - charts not current. WARNING: Report outdated charts immediately. Request radar vectors or direct headings."
+  }
+};
 
 const explanations = {
-  fr: [
-    "Premier contact avec la tour de contrôle pour demande de départ.",
-    "Réponse à l'autorisation de départ et confirmation.",
-    "Demande de roulage vers la piste.",
-    "Demande de décollage immédiat.",
-    "Contact avec l'approche/départ après décollage.",
-    "Demande de changement d'altitude.",
-    "Contact avec le centre de contrôle en route.",
-    "Demande de cap direct au lieu d'un point de navigation.",
-    "Premier contact avec l'approche de destination.",
-    "Demande d'approche directe.",
-    "Intégration dans le circuit d'aérodrome.",
-    "Base leg dans le circuit.",
-    "Finale avec clearance d'atterrissage.",
-    "Libération de piste et roulage au parking.",
-    "Test radio.",
-    "Demande de répétition (Say again).",
-    "Demande de parler plus lentement.",
-    "Confirmation de réception d'instructions.",
-    "Report de position en route.",
-    "Demande de vecteur radar.",
-    "Ident transpondeur.",
-    "Changement de fréquence.",
-    "Demande d'urgence priorité.",
-    "PAN PAN (urgence non vitale).",
-    "MAYDAY (urgence vitale)."
-  ],
-  en: [
-    "Initial contact with tower for departure clearance.",
-    "Response to departure clearance and confirmation.",
-    "Request for taxi to runway.",
-    "Request for immediate takeoff.",
-    "Contact with approach/departure after takeoff.",
-    "Request for altitude change.",
-    "Contact with area control center enroute.",
-    "Request for direct heading instead of navigation point.",
-    "Initial contact with destination approach.",
-    "Request for direct approach.",
-    "Integration into airport circuit.",
-    "Base leg in the circuit.",
-    "Final with landing clearance.",
-    "Runway vacation and taxi to parking.",
-    "Radio check.",
-    "Request for repetition (Say again).",
-    "Request to speak slower.",
-    "Confirmation of received instructions.",
-    "Position report enroute.",
-    "Request for radar vector.",
-    "Transponder ident.",
-    "Frequency change.",
-    "Request for emergency priority.",
-    "PAN PAN (non-vital emergency).",
-    "MAYDAY (vital emergency)."
-  ]
+  fr: {
+    vfr_updated: [
+      "Premier contact avec la tour de contrôle pour demande de départ VFR.",
+      "Réponse à l'autorisation de départ et confirmation.",
+      "Demande de roulage vers la piste.",
+      "Demande de décollage immédiat.",
+      "Contact avec l'approche/départ après décollage.",
+      "Demande de changement d'altitude.",
+      "Contact avec le centre de contrôle en route.",
+      "Demande de cap direct au lieu d'un point de navigation.",
+      "Premier contact avec l'approche de destination.",
+      "Demande d'approche directe.",
+      "Intégration dans le circuit d'aérodrome.",
+      "Base leg dans le circuit.",
+      "Finale avec clearance d'atterrissage.",
+      "Libération de piste et roulage au parking.",
+      "Test radio.",
+      "Demande de répétition (Say again).",
+      "Demande de parler plus lentement.",
+      "Confirmation de réception d'instructions.",
+      "Report de position en route.",
+      "Demande de vecteur radar.",
+      "Ident transpondeur.",
+      "Changement de fréquence.",
+      "Demande d'urgence priorité.",
+      "PAN PAN (urgence non vitale).",
+      "MAYDAY (urgence vitale)."
+    ],
+    vfr_outdated: [
+      "Premier contact VFR - signaler cartes non à jour.",
+      "Réponse à l'autorisation avec mention cartes obsolètes.",
+      "Demande de roulage vers la piste.",
+      "Demande de décollage immédiat.",
+      "Contact départ - cartes non à jour, demande vecteurs.",
+      "Demande de changement d'altitude.",
+      "Contact centre - demande caps directs (cartes obsolètes).",
+      "Demande cap direct - cartes non mises à jour.",
+      "Contact approche - signaler cartes obsolètes.",
+      "Demande approche directe - cartes non à jour.",
+      "Intégration circuit - demande guidage.",
+      "Base leg avec demande de confirmation.",
+      "Finale avec clearance d'atterrissage.",
+      "Libération de piste et roulage au parking.",
+      "Test radio.",
+      "Demande de répétition (Say again).",
+      "Demande de parler plus lentement.",
+      "Confirmation de réception d'instructions.",
+      "Report de position avec demande guidage.",
+      "Demande vecteur radar (cartes obsolètes).",
+      "Ident transpondeur.",
+      "Changement de fréquence.",
+      "Demande d'urgence priorité.",
+      "PAN PAN (urgence non vitale).",
+      "MAYDAY (urgence vitale)."
+    ],
+    ifr_updated: [
+      "Demande de clairance IFR au départ.",
+      "Confirmation clairance IFR reçue.",
+      "Demande de roulage avec clairance IFR.",
+      "Prêt pour décollage IFR.",
+      "Contact départ après décollage IFR.",
+      "Demande changement niveau de vol.",
+      "Contact centre en route IFR.",
+      "Demande routage direct (déviation plan de vol).",
+      "Contact approche IFR destination.",
+      "Demande approche aux instruments.",
+      "Confirmation approche assignée.",
+      "Intercept localizer ou final.",
+      "Finale approche aux instruments.",
+      "Atterrissage et libération de piste.",
+      "Test radio.",
+      "Demande de répétition (Say again).",
+      "Demande de parler plus lentement.",
+      "Confirmation de réception d'instructions.",
+      "Report obligatoire de position IFR.",
+      "Demande vecteur radar IFR.",
+      "Ident transpondeur.",
+      "Changement de fréquence.",
+      "Demande d'urgence priorité.",
+      "PAN PAN (urgence non vitale).",
+      "MAYDAY (urgence vitale)."
+    ],
+    ifr_outdated: [
+      "Demande clairance IFR - cartes NON À JOUR.",
+      "Confirmation clairance avec signalement cartes obsolètes.",
+      "Demande roulage - cartes non mises à jour.",
+      "Prêt décollage IFR - cartes obsolètes signalées.",
+      "Contact départ IFR - URGENT : cartes non à jour.",
+      "Demande changement niveau avec cartes obsolètes.",
+      "Contact centre - CARTES NON À JOUR - demande vecteurs.",
+      "URGENT : demande cap direct - cartes obsolètes.",
+      "Contact approche IFR - CARTES OBSOLÈTES.",
+      "Demande vecteurs radar - cartes non à jour.",
+      "Demande guidage complet - cartes obsolètes.",
+      "Demande vecteurs pour finale - cartes non à jour.",
+      "Finale avec guidage radar - cartes obsolètes.",
+      "Atterrissage et demande guidage au sol.",
+      "Test radio.",
+      "Demande de répétition (Say again).",
+      "Demande de parler plus lentement.",
+      "Confirmation de réception d'instructions.",
+      "Report position avec demande vecteurs urgents.",
+      "URGENT : vecteur radar - cartes obsolètes.",
+      "Ident transpondeur.",
+      "Changement de fréquence.",
+      "Demande d'urgence priorité.",
+      "PAN PAN (urgence non vitale).",
+      "MAYDAY (urgence vitale)."
+    ]
+  },
+  en: {
+    vfr_updated: [
+      "Initial contact with tower for VFR departure clearance.",
+      "Response to departure clearance and confirmation.",
+      "Request for taxi to runway.",
+      "Request for immediate takeoff.",
+      "Contact with approach/departure after takeoff.",
+      "Request for altitude change.",
+      "Contact with area control center enroute.",
+      "Request for direct heading instead of navigation point.",
+      "Initial contact with destination approach.",
+      "Request for direct approach.",
+      "Integration into airport circuit.",
+      "Base leg in the circuit.",
+      "Final with landing clearance.",
+      "Runway vacation and taxi to parking.",
+      "Radio check.",
+      "Request for repetition (Say again).",
+      "Request to speak slower.",
+      "Confirmation of received instructions.",
+      "Position report enroute.",
+      "Request for radar vector.",
+      "Transponder ident.",
+      "Frequency change.",
+      "Request for emergency priority.",
+      "PAN PAN (non-vital emergency).",
+      "MAYDAY (vital emergency)."
+    ],
+    vfr_outdated: [
+      "Initial VFR contact - report charts not current.",
+      "Clearance response mentioning outdated charts.",
+      "Request for taxi to runway.",
+      "Request for immediate takeoff.",
+      "Departure contact - charts not current, request vectors.",
+      "Request for altitude change.",
+      "Center contact - request direct headings (charts outdated).",
+      "Request direct heading - charts not updated.",
+      "Approach contact - report charts outdated.",
+      "Request direct approach - charts not current.",
+      "Circuit integration - request guidance.",
+      "Base leg with confirmation request.",
+      "Final with landing clearance.",
+      "Runway vacation and taxi to parking.",
+      "Radio check.",
+      "Request for repetition (Say again).",
+      "Request to speak slower.",
+      "Confirmation of received instructions.",
+      "Position report with guidance request.",
+      "Request radar vector (charts outdated).",
+      "Transponder ident.",
+      "Frequency change.",
+      "Request for emergency priority.",
+      "PAN PAN (non-vital emergency).",
+      "MAYDAY (vital emergency)."
+    ],
+    ifr_updated: [
+      "Request for IFR clearance at departure.",
+      "IFR clearance confirmation received.",
+      "Request for taxi with IFR clearance.",
+      "Ready for IFR takeoff.",
+      "Departure contact after IFR takeoff.",
+      "Request flight level change.",
+      "Center contact enroute IFR.",
+      "Request direct routing (flight plan deviation).",
+      "IFR approach contact at destination.",
+      "Request instrument approach.",
+      "Confirmation of assigned approach.",
+      "Intercept localizer or final.",
+      "Final instrument approach.",
+      "Landing and runway vacation.",
+      "Radio check.",
+      "Request for repetition (Say again).",
+      "Request to speak slower.",
+      "Confirmation of received instructions.",
+      "Mandatory IFR position report.",
+      "Request IFR radar vector.",
+      "Transponder ident.",
+      "Frequency change.",
+      "Request for emergency priority.",
+      "PAN PAN (non-vital emergency).",
+      "MAYDAY (vital emergency)."
+    ],
+    ifr_outdated: [
+      "Request IFR clearance - charts NOT CURRENT.",
+      "Clearance confirmation reporting outdated charts.",
+      "Request taxi - charts not updated.",
+      "Ready IFR takeoff - outdated charts reported.",
+      "IFR departure contact - URGENT: charts not current.",
+      "Request level change with outdated charts.",
+      "Center contact - CHARTS NOT CURRENT - request vectors.",
+      "URGENT: request direct heading - outdated charts.",
+      "IFR approach contact - CHARTS OUTDATED.",
+      "Request radar vectors - charts not current.",
+      "Request full guidance - charts outdated.",
+      "Request vectors to final - charts not current.",
+      "Final with radar guidance - charts outdated.",
+      "Landing and request ground guidance.",
+      "Radio check.",
+      "Request for repetition (Say again).",
+      "Request to speak slower.",
+      "Confirmation of received instructions.",
+      "Position report requesting urgent vectors.",
+      "URGENT: radar vector - charts outdated.",
+      "Transponder ident.",
+      "Frequency change.",
+      "Request for emergency priority.",
+      "PAN PAN (non-vital emergency).",
+      "MAYDAY (vital emergency)."
+    ]
+  }
 };
 
 const phrases = {
@@ -360,13 +535,49 @@ const stepTitles = {
   ]
 };
 
+function setFlightType(type) {
+  flightType = type;
+  document.getElementById('flight-vfr').classList.toggle('active', type === 'vfr');
+  document.getElementById('flight-ifr').classList.toggle('active', type === 'ifr');
+  updateInfoText();
+  updateTitle();
+  
+  // Réaffiche les phrases si déjà générées
+  if (document.getElementById('output').innerHTML.trim()) {
+    generatePhrases();
+  }
+}
+
+function setChartsStatus(status) {
+  chartsStatus = status;
+  document.getElementById('charts-updated').classList.toggle('active', status === 'updated');
+  document.getElementById('charts-outdated').classList.toggle('active', status === 'outdated');
+  updateInfoText();
+  
+  // Réaffiche les phrases si déjà générées
+  if (document.getElementById('output').innerHTML.trim()) {
+    generatePhrases();
+  }
+}
+
+function updateInfoText() {
+  const key = `${flightType}_${chartsStatus}`;
+  document.getElementById('info-text').textContent = infoTexts[siteLang][key];
+}
+
+function updateTitle() {
+  const baseTitle = siteLang === 'fr' ? 
+    "Communications ATC - Guide des phrases radio " : 
+    "ATC Communications - Radio Phrase Guide ";
+  document.getElementById('main-title').textContent = baseTitle + flightType.toUpperCase();
+}
+
 function setSiteLang(lang) {
   siteLang = lang;
   document.getElementById('site-fr').classList.toggle('active', lang === 'fr');
   document.getElementById('site-en').classList.toggle('active', lang === 'en');
-  document.getElementById('main-title').textContent = lang === 'fr' ? 
-    "Communications ATC - Guide des phrases radio VFR" : 
-    "ATC Communications - VFR Radio Phrase Guide";
+  updateTitle();
+  updateInfoText();
   
   // Labels et placeholders
   document.querySelectorAll('label').forEach(label => {
@@ -410,8 +621,9 @@ function generatePhrases(event) {
   const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
 
+  const key = `${flightType}_${chartsStatus}`;
   const phraseList = phrases[commLang];
-  const explainList = explanations[siteLang];
+  const explainList = explanations[siteLang][key];
   const stepList = stepTitles[siteLang];
 
   let html = "";
@@ -430,6 +642,8 @@ function generatePhrases(event) {
 // Initialisation
 setSiteLang('fr');
 setCommLang('en');
+setFlightType('vfr');
+setChartsStatus('updated');
 </script>
 
 </body>
