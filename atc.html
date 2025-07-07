@@ -362,6 +362,15 @@
     <option value="right" data-fr="Right" data-en="Right">Right</option>
   </select>
 
+  <label for="pushDirection" data-fr="Direction repoussage (optionnel)" data-en="Push direction (optional)" style="font-size: 0.9em; color: #666;">Direction repoussage (optionnel)</label>
+  <select id="pushDirection" name="pushDirection" style="font-size: 0.9em; padding: 6px;">
+    <option value="" data-fr="Non spécifiée" data-en="Not specified">Non spécifiée</option>
+    <option value="east" data-fr="Est (East)" data-en="East">Est (East)</option>
+    <option value="west" data-fr="Ouest (West)" data-en="West">Ouest (West)</option>
+    <option value="north" data-fr="Nord (North)" data-en="North">Nord (North)</option>
+    <option value="south" data-fr="Sud (South)" data-en="South">Sud (South)</option>
+  </select>
+
   <label for="parking" data-fr="Place de parking à l'arrivée - optionnel" data-en="Arrival parking spot - optional">Place de parking à l'arrivée - optionnel</label>
   <input type="text" id="parking" name="parking" placeholder="Ex: G23 (laissez vide si inconnu)" />
 
@@ -673,23 +682,26 @@ const explanations = {
 const phrases = {
   fr: [
     // Contact initial départ - PHRASÉOLOGIE EXACTE selon demande utilisateur
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
       // Structure EXACTE : Tour + callsign + parking + type + clearance pour + destination + information ATIS
       let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, parking ${parkingDep}, ${flightType.toUpperCase()}, clearance pour ${arr}, information ${atisInfo}`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Confirmation répétition clairance (readback)
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
       let altText = formatAltitude(alt, altType, 'fr');
       let base = `Autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, ${callsign || "Victor Juliet Zero Five"}`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Demande push and start
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande repoussage et démarrage moteurs.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
+      let directionText = pushDirection ? ` facing ${pushDirection}` : '';
+      return `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande repoussage et démarrage moteurs${pushDirection ? ` face ${pushDirection === 'east' ? 'est' : pushDirection === 'west' ? 'ouest' : pushDirection === 'north' ? 'nord' : 'sud'}` : ''}.</span>`;
+    },
     // Demande roulage
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
       let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}`;
       if (flightType === 'ifr') base += `, plan de vol IFR activé`;
       base += '.';
@@ -772,7 +784,10 @@ const phrases = {
       return `<span class="phrase">${base}</span>`;
     },
     // Push and start request
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for push and start.</span>`,
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
+      let directionText = pushDirection ? ` facing ${pushDirection}` : '';
+      return `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for push and start${directionText}.</span>`;
+    },
     // Taxi request
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       let base = `${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for taxi runway ${rDep}, destination ${arr}`;
@@ -971,6 +986,10 @@ function setSiteLang(lang) {
     if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
   });
   
+  document.querySelectorAll('#pushDirection option').forEach(opt => {
+    if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
+  });
+  
   // Altitude type buttons
   document.querySelectorAll('.alt-type-btn').forEach(btn => {
     if (btn.dataset[lang]) btn.textContent = btn.dataset[lang];
@@ -1006,6 +1025,7 @@ function generatePhrases(event) {
   const alt = document.getElementById("altitude").value.trim();
   const deg = document.getElementById("degree").value.trim();
   const lr = document.getElementById("leftRight").value;
+  const pushDirection = document.getElementById("pushDirection").value;
   const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
 
@@ -1049,7 +1069,7 @@ function generatePhrases(event) {
       html += stepList[i]();
     }
     // Toujours afficher la phrase (que le titre existe ou non)
-    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo)}</details>`;
+    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection)}</details>`;
   }
 
   document.getElementById("output").innerHTML = html;
