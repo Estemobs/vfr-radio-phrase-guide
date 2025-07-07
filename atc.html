@@ -356,15 +356,6 @@
     <button type="button" id="alt-type-fl" class="alt-type-btn-small" onclick="setAltitudeType('fl')" data-fr="FL" data-en="FL">FL</button>
   </div>
 
-  <label for="pushDirection" data-fr="Direction repoussage (optionnel)" data-en="Push direction (optional)" style="font-size: 0.9em; color: #666;">Direction repoussage (optionnel)</label>
-  <select id="pushDirection" name="pushDirection" style="font-size: 0.9em; padding: 6px;">
-    <option value="" data-fr="Non spécifiée" data-en="Not specified">Non spécifiée</option>
-    <option value="east" data-fr="Est (East)" data-en="East">Est (East)</option>
-    <option value="west" data-fr="Ouest (West)" data-en="West">Ouest (West)</option>
-    <option value="north" data-fr="Nord (North)" data-en="North">Nord (North)</option>
-    <option value="south" data-fr="Sud (South)" data-en="South">Sud (South)</option>
-  </select>
-
   <label for="parking" data-fr="Place de parking à l'arrivée - optionnel" data-en="Arrival parking spot - optional">Place de parking à l'arrivée - optionnel</label>
   <input type="text" id="parking" name="parking" placeholder="Ex: G23 (laissez vide si inconnu)" />
 
@@ -448,6 +439,7 @@ const explanations = {
       "Premier contact avec la tour de contrôle pour demande de départ VFR.",
       "Confirmation et répétition des éléments de clairance reçus.",
       "Demande de repoussage et démarrage moteurs.",
+      "Push and start avec direction facing (réponse).",
       "Demande de roulage vers la piste.",
       "Demande de décollage immédiat.",
       "Contact avec l'approche/départ après décollage.",
@@ -476,6 +468,7 @@ const explanations = {
       "Premier contact VFR.",
       "Confirmation et répétition des éléments de clairance reçus.",
       "Demande de repoussage et démarrage moteurs.",
+      "Push and start avec direction facing (réponse).",
       "Demande de roulage vers la piste.",
       "Demande de décollage immédiat.",
       "Contact départ, demande vecteurs.",
@@ -504,6 +497,7 @@ const explanations = {
       "Demande de clairance IFR au départ.",
       "Confirmation et répétition des éléments de clairance reçus.",
       "Demande de repoussage et démarrage moteurs.",
+      "Push and start avec direction facing (réponse).",
       "Demande de roulage avec clairance IFR.",
       "Prêt pour décollage IFR.",
       "Contact départ après décollage IFR.",
@@ -532,6 +526,7 @@ const explanations = {
       "Demande clairance IFR.",
       "Confirmation et répétition des éléments de clairance reçus.",
       "Demande de repoussage et démarrage moteurs.",
+      "Push and start avec direction facing (réponse).",
       "Demande roulage.",
       "Prêt décollage IFR.",
       "Contact départ IFR.",
@@ -562,6 +557,7 @@ const explanations = {
       "Initial contact with tower for VFR departure clearance.",
       "Readback and confirmation of clearance elements received.",
       "Request for push and start.",
+      "Push and start with facing direction (response).",
       "Request for taxi to runway.",
       "Request for immediate takeoff.",
       "Contact with approach/departure after takeoff.",
@@ -590,6 +586,7 @@ const explanations = {
       "Initial VFR contact.",
       "Readback and confirmation of clearance elements received.",
       "Request for push and start.",
+      "Push and start with facing direction (response).",
       "Request for taxi to runway.",
       "Request for immediate takeoff.",
       "Departure contact with request for vectors.",
@@ -618,6 +615,7 @@ const explanations = {
       "Request for IFR clearance at departure.",
       "Readback and confirmation of clearance elements received.",
       "Request for push and start.",
+      "Push and start with facing direction (response).",
       "Request for taxi with IFR clearance.",
       "Ready for IFR takeoff.",
       "Departure contact after IFR takeoff.",
@@ -646,6 +644,7 @@ const explanations = {
       "Request IFR clearance.",
       "Readback and confirmation of clearance elements received.",
       "Request for push and start.",
+      "Push and start with facing direction (response).",
       "Request taxi.",
       "Ready IFR takeoff.",
       "IFR departure contact.",
@@ -676,26 +675,29 @@ const explanations = {
 const phrases = {
   fr: [
     // Contact initial départ - PHRASÉOLOGIE EXACTE selon demande utilisateur
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
       // Structure EXACTE : Tour + callsign + parking + type + clearance pour + destination + information ATIS
       let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, parking ${parkingDep}, ${flightType.toUpperCase()}, clearance pour ${arr}, information ${atisInfo}`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Confirmation répétition clairance (readback)
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
       let altText = formatAltitude(alt, altType, 'fr');
       let base = `Autorisé ${flightType.toUpperCase()} vers ${arr}, ${altText}, transpondeur ${squawk || "1200"}, ${callsign || "Victor Juliet Zero Five"}`;
       base += '.';
       return `<span class="phrase">${base}</span>`;
     },
     // Demande push and start
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
-      let directionText = pushDirection ? ` facing ${pushDirection}` : '';
-      return `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande repoussage et démarrage moteurs${pushDirection ? ` face ${pushDirection === 'east' ? 'est' : pushDirection === 'west' ? 'ouest' : pushDirection === 'north' ? 'nord' : 'sud'}` : ''}.</span>`;
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+      return `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande repoussage et démarrage moteurs.</span>`;
+    },
+    // Push and start facing (nouveau menu déroulant)
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, push and start facing <select id="pushDirectionSelect" onchange="updatePushPhrase()" style="display: inline; width: auto; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc;"><option value="">---</option><option value="east">Est</option><option value="west">Ouest</option><option value="north">Nord</option><option value="south">Sud</option></select>.</span>`;
     },
     // Demande roulage
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
       let base = `Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, prêt pour roulage piste ${rDep}, destination ${arr}`;
       if (flightType === 'ifr') base += `, plan de vol IFR activé`;
       base += '.';
@@ -778,9 +780,12 @@ const phrases = {
       return `<span class="phrase">${base}</span>`;
     },
     // Push and start request
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection) => {
-      let directionText = pushDirection ? ` facing ${pushDirection}` : '';
-      return `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for push and start${directionText}.</span>`;
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+      return `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for push and start.</span>`;
+    },
+    // Push and start facing (nouveau menu déroulant)
+    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, push and start facing <select id="pushDirectionSelectEn" onchange="updatePushPhrase()" style="display: inline; width: auto; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc;"><option value="">---</option><option value="east">East</option><option value="west">West</option><option value="north">North</option><option value="south">South</option></select>.</span>`;
     },
     // Taxi request
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
@@ -854,7 +859,7 @@ const phrases = {
 const stepTitles = {
   fr: [
     () => `<div class="step-title">🛫 Départ</div>`,
-    null, null,
+    null, null, null,
     () => `<div class="step-title">✈️ En route</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrivée</div>`,
@@ -866,7 +871,7 @@ const stepTitles = {
   ],
   en: [
     () => `<div class="step-title">🛫 Departure</div>`,
-    null, null,
+    null, null, null,
     () => `<div class="step-title">✈️ Enroute</div>`,
     null, null, null,
     () => `<div class="step-title">🛬 Arrival</div>`,
@@ -1015,7 +1020,6 @@ function generatePhrases(event) {
   const alt = document.getElementById("altitude").value.trim();
   const deg = document.getElementById("degree").value.trim();
   const lr = "left"; // Valeur par défaut car le champ leftRight n'existe plus
-  const pushDirection = document.getElementById("pushDirection").value;
   const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
 
@@ -1059,10 +1063,16 @@ function generatePhrases(event) {
       html += stepList[i]();
     }
     // Toujours afficher la phrase (que le titre existe ou non)
-    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo, pushDirection)}</details>`;
+    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo)}</details>`;
   }
 
   document.getElementById("output").innerHTML = html;
+}
+
+// Fonction pour mettre à jour la phrase push and start en temps réel
+function updatePushPhrase() {
+  // Pas besoin de régénérer toutes les phrases, juste mettre à jour visuellement
+  // La phrase se met à jour automatiquement via le select intégré
 }
 
 // Initialisation
