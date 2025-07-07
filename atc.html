@@ -362,9 +362,6 @@
   <label for="qnh" data-fr="QNH (facultatif)" data-en="QNH (optional)">QNH (facultatif)</label>
   <input type="text" id="qnh" name="qnh" placeholder="Ex: 1013" />
 
-  <label for="takeoffHeading" data-fr="Cap après décollage (facultatif)" data-en="Heading after takeoff (optional)">Cap après décollage (facultatif)</label>
-  <input type="number" id="takeoffHeading" name="takeoffHeading" placeholder="Ex: 090" min="0" max="359" />
-
   <button type="submit" data-fr="Générer les phrases ATC" data-en="Generate ATC phrases">Générer les phrases ATC</button>
 </form>
 
@@ -725,14 +722,13 @@ const phrases = {
       return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, taxi for runway ${rDep} via <input type="text" id="taxiRouteInput" placeholder="A, B2, holding point..." style="display: inline; width: 300px; padding: 4px; margin: 0 4px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Prêt décollage
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh, takeoffHeading) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for takeoff runway ${rDep}.</span>`,
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for takeoff runway ${rDep}.</span>`,
     // Autorisé décollage
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh, takeoffHeading) => {
-      let headingText = takeoffHeading ? `, après décollage cap ${takeoffHeading}` : '';
-      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, autorisé décollage piste ${rDep}${headingText}.</span>`;
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh) => {
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, autorisé décollage piste ${rDep}, après décollage cap <input type="text" placeholder="090" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;"> et contact radar sur <input type="text" placeholder="121.9" style="display: inline; width: 80px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Contact départ
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh, takeoffHeading) => {
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh) => {
       let altText = formatAltitude(alt, altType, 'fr');
       let base = `Départ ${dep}, ${callsign || "Victor Juliet Zero Five"}, décollé piste ${rDep}, montée ${altText}, ${flightType.toUpperCase()} vers ${arr}`;
       base += '.';
@@ -752,7 +748,7 @@ const phrases = {
     },
     // Demande cap direct
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let capText = deg ? "cap " + deg + "° direct" : "cap direct";
+      let capText = takeoffHeading ? "cap " + takeoffHeading + "° direct" : "cap direct";
       return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande ${capText}.</span>`;
     },
     // Contact approche
@@ -823,11 +819,10 @@ const phrases = {
       return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, taxi for runway ${rDep} via <input type="text" id="taxiRouteInputEn" placeholder="A, B2, holding point..." style="display: inline; width: 300px; padding: 4px; margin: 0 4px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Ready for takeoff
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh, takeoffHeading) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for takeoff runway ${rDep}.</span>`,
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for takeoff runway ${rDep}.</span>`,
     // Clear for takeoff
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh, takeoffHeading) => {
-      let headingText = takeoffHeading ? `, after takeoff turn heading ${takeoffHeading}` : '';
-      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, cleared for takeoff runway ${rDep}${headingText}.</span>`;
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo, qnh) => {
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, cleared for takeoff runway ${rDep}, after takeoff turn heading <input type="text" placeholder="090" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;"> and contact radar on <input type="text" placeholder="121.9" style="display: inline; width: 80px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Departure contact
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
@@ -849,7 +844,7 @@ const phrases = {
     },
     // Direct heading request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let headingText = deg ? "heading " + deg + " degrees direct" : "direct heading";
+      let headingText = takeoffHeading ? "heading " + takeoffHeading + " degrees direct" : "direct heading";
       return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, request ${headingText}.</span>`;
     },
     // Approach contact
@@ -1060,7 +1055,6 @@ function generatePhrases(event) {
   const parking = document.getElementById("parking").value.trim();
   const squawk = document.getElementById("squawk").value.trim();
   const qnh = getQNHValue();
-  const takeoffHeading = document.getElementById("takeoffHeading").value.trim();
 
   // Validation des champs obligatoires UNIQUEMENT
   if (!depName) {
@@ -1102,7 +1096,7 @@ function generatePhrases(event) {
       html += stepList[i]();
     }
     // Toujours afficher la phrase (que le titre existe ou non)
-    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo, qnh, takeoffHeading)}</details>`;
+    html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, "", lr, parking, callsign, squawk, altitudeType, flightType, chartsStatus, parkingDep, atisInfo, qnh)}</details>`;
   }
 
   document.getElementById("output").innerHTML = html;
