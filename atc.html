@@ -475,7 +475,6 @@ const explanations = {
       "Contact départ, demande vecteurs.",
       "Premier contact avec une nouvelle zone de contrôle (check-in).",
       "Demande de changement de niveau de vol.",
-      "Contact centre, demande niveau.",
       "Demande cap direct (avec champ de saisie libre).",
       "Demande cap pour point de navigation inconnu (cartes non à jour).",
       "Contact approche destination.",
@@ -533,7 +532,6 @@ const explanations = {
       "Contact départ IFR.",
       "Premier contact avec une nouvelle zone de contrôle (check-in).",
       "Demande de changement de niveau de vol.",
-      "Contact centre, demande niveau.",
       "Demande cap direct (avec champ de saisie libre).",
       "Demande cap pour point de navigation inconnu (cartes non à jour).",
       "Contact approche IFR.",
@@ -564,7 +562,6 @@ const explanations = {
       "Contact with approach/departure after takeoff.",
       "Initial contact with new control zone (check-in).",
       "Request for flight level change.",
-      "Contact with area control center enroute.",
       "Request for direct heading instead of navigation point.",
       "Initial contact with destination approach.",
       "Request for direct approach.",
@@ -751,15 +748,6 @@ const phrases = {
         return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb FL<input type="text" placeholder="150" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
       }
     },
-    // Contact centre
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = formatAltitude(alt, altType, commLang) || (commLang === 'fr' ? "niveau actuel" : "current level");
-      if (commLang === 'fr') {
-        return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} de ${dep} vers ${arr}.</span>`;
-      } else {
-        return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} from ${dep} to ${arr}.</span>`;
-      }
-    },
     // Demande cap direct
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       if (commLang === 'fr') {
@@ -866,11 +854,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb FL<input type="text" placeholder="150" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
-    // Center contact
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      let altText = formatAltitude(alt, altType, 'en') || "current level";
-      return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, ${altText}, ${flightType.toUpperCase()} from ${dep} to ${arr}.</span>`;
-    },
     // Direct heading request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, request heading <input type="text" id="headingInputEn" placeholder="360" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">° direct.</span>`;
@@ -922,7 +905,7 @@ const stepTitles = {
     () => `<div class="step-title">🛫 Départ</div>`,
     null, null, null, null, null, null, null,
     () => `<div class="step-title">✈️ En route</div>`,
-    null, null, null, null, null,
+    null, null, null, null,
     () => `<div class="step-title">🛬 Arrivée</div>`,
     null, null, null, null, null, null,
     () => `<div class="step-title">📞 Communications générales</div>`,
@@ -934,7 +917,7 @@ const stepTitles = {
     () => `<div class="step-title">🛫 Departure</div>`,
     null, null, null, null, null, null, null,
     () => `<div class="step-title">✈️ Enroute</div>`,
-    null, null, null, null, null,
+    null, null, null, null,
     () => `<div class="step-title">🛬 Arrival</div>`,
     null, null, null, null, null, null,
     () => `<div class="step-title">📞 General communications</div>`,
