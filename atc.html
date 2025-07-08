@@ -734,18 +734,20 @@ const phrases = {
     },
     // Transition zone de contrôle
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      const altText = formatAltitude(alt, altType, commLang);
       if (commLang === 'fr') {
-        return `<span class="phrase"><input type="text" placeholder="Nom de la zone (ex: Contrôle Paris)" style="display: inline; width: 200px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position (facultatif)" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, FL<input type="text" placeholder="095" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${flightType.toUpperCase()} vers ${arr}.</span>`;
+        return `<span class="phrase"><input type="text" placeholder="Nom de la zone (ex: Contrôle Paris)" style="display: inline; width: 200px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position (facultatif)" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${altText}, ${flightType.toUpperCase()} vers ${arr}.</span>`;
       } else {
-        return `<span class="phrase"><input type="text" placeholder="Control zone name (e.g., Paris Control)" style="display: inline; width: 220px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position (optional)" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, FL<input type="text" placeholder="095" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${flightType.toUpperCase()} to ${arr}.</span>`;
+        return `<span class="phrase"><input type="text" placeholder="Control zone name (e.g., Paris Control)" style="display: inline; width: 220px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position (optional)" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${altText}, ${flightType.toUpperCase()} to ${arr}.</span>`;
       }
     },
     // Demande changement altitude
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      const altText = formatAltitude(alt, altType, commLang);
       if (commLang === 'fr') {
-        return `<span class="phrase"><input type="text" placeholder="Nom contrôleur" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, demande montée FL<input type="text" placeholder="150" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
+        return `<span class="phrase"><input type="text" placeholder="Nom contrôleur" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, demande montée ${altText}.</span>`;
       } else {
-        return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb FL<input type="text" placeholder="150" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
+        return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb ${altText}.</span>`;
       }
     },
     // Demande cap direct
@@ -872,11 +874,13 @@ const phrases = {
     },
     // Control zone transition
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      return `<span class="phrase"><input type="text" placeholder="Control zone name (e.g., Paris Control)" style="display: inline; width: 220px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position (optional)" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, FL<input type="text" placeholder="095" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${flightType.toUpperCase()} to ${arr}.</span>`;
+      const altText = formatAltitude(alt, altType, 'en');
+      return `<span class="phrase"><input type="text" placeholder="Control zone name (e.g., Paris Control)" style="display: inline; width: 220px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="position (optional)" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${altText}, ${flightType.toUpperCase()} to ${arr}.</span>`;
     },
     // Altitude change request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb FL<input type="text" placeholder="150" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
+      const altText = formatAltitude(alt, altType, 'en');
+      return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb ${altText}.</span>`;
     },
     // Direct heading request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
