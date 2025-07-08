@@ -797,12 +797,36 @@ const phrases = {
     },
     // Communications générales...
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Tour ${dep}, test radio, ${callsign || "Victor Juliet Zero Five"}.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Say again please, ${callsign || "Victor Juliet Zero Five"}.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">Speak slower please, ${callsign || "Victor Juliet Zero Five"}.</span>`,
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      if (commLang === 'fr') {
+        return `<span class="phrase">Répétez s'il vous plaît, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      } else {
+        return `<span class="phrase">Say again please, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      }
+    },
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      if (commLang === 'fr') {
+        return `<span class="phrase">Parlez plus lentement s'il vous plaît, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      } else {
+        return `<span class="phrase">Speak slower please, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      }
+    },
     // Phrase vide pour faire place au titre "Urgences" à l'index 23
     () => null,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, [nature du problème], position [position], demande assistance, ${callsign || "Victor Juliet Zero Five"}.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, [urgence vitale], position [position], [nombre de personnes] personnes à bord, ${callsign || "Victor Juliet Zero Five"}.</span>`
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      if (commLang === 'fr') {
+        return `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, <input type="text" placeholder="nature du problème" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, position <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, demande assistance, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      } else {
+        return `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="nature of problem" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, position <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, request assistance.</span>`;
+      }
+    },
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      if (commLang === 'fr') {
+        return `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, <input type="text" placeholder="urgence vitale" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, position <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, <input type="text" placeholder="nombre" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;"> personnes à bord, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      } else {
+        return `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="vital emergency" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, position <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, <input type="text" placeholder="number" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;"> souls on board.</span>`;
+      }
+    }
   ],
   en: [
     // Initial departure contact - Correct structure  
@@ -891,12 +915,36 @@ const phrases = {
     },
     // General communications...
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, radio check.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`,
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      if (commLang === 'fr') {
+        return `<span class="phrase">Répétez s'il vous plaît, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      } else {
+        return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, say again please.</span>`;
+      }
+    },
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      if (commLang === 'fr') {
+        return `<span class="phrase">Parlez plus lentement s'il vous plaît, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      } else {
+        return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, speak slower please.</span>`;
+      }
+    },
     // Phrase vide pour faire place au titre "Emergencies" à l'index 23
     () => null,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, [nature of problem], position [position], request assistance.</span>`,
-    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, [vital emergency], position [position], [number] souls on board.</span>`
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      if (commLang === 'fr') {
+        return `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, <input type="text" placeholder="nature du problème" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, position <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, demande assistance, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      } else {
+        return `<span class="phrase">PAN PAN, PAN PAN, PAN PAN, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="nature of problem" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, position <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, request assistance.</span>`;
+      }
+    },
+    (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
+      if (commLang === 'fr') {
+        return `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, <input type="text" placeholder="urgence vitale" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, position <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, <input type="text" placeholder="nombre" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;"> personnes à bord, ${callsign || "Victor Juliet Zero Five"}.</span>`;
+      } else {
+        return `<span class="phrase">MAYDAY, MAYDAY, MAYDAY, ${callsign || "Victor Juliet Zero Five"}, <input type="text" placeholder="vital emergency" style="display: inline; width: 150px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, position <input type="text" placeholder="position" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, <input type="text" placeholder="number" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;"> souls on board.</span>`;
+      }
+    }
   ]
 };
 
