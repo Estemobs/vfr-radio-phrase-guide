@@ -140,16 +140,10 @@
   <input type="text" id="runwayArr" name="runwayArr" required placeholder="Ex: 09" />
 
   <label for="degree" data-fr="Cap (degré)" data-en="Heading (degree)">Cap (degré)</label>
-  <input type="number" id="degree" name="degree" required placeholder="Ex: 045" min="0" max="359" />
+  <input type="text" id="degree" name="degree" required placeholder="Ex: 045" />
 
   <label for="altitude" data-fr="Altitude (pieds)" data-en="Altitude (feet)">Altitude (pieds)</label>
-  <input type="number" id="altitude" name="altitude" placeholder="Ex: 3500" />
-
-  <label for="leftRight" data-fr="Left or Right (downwind)" data-en="Left or Right (downwind)">Left or Right (downwind)</label>
-  <select id="leftRight" name="leftRight" required>
-    <option value="left" data-fr="Left" data-en="Left">Left</option>
-    <option value="right" data-fr="Right" data-en="Right">Right</option>
-  </select>
+  <input type="text" id="altitude" name="altitude" placeholder="Ex: 3500" />
 
   <label for="parking" data-fr="Place de parking à l'arrivée" data-en="Arrival parking spot">Place de parking à l'arrivée</label>
   <input type="text" id="parking" name="parking" placeholder="Ex: G23" />
@@ -175,7 +169,6 @@ const explanations = {
     "Annonce de position en route (optionnel).",
     "Annonce de l'arrivée.",
     "Annonce d'arrivée à 10 NM.",
-    "Annonce d'intégration vent arrière.",
     "Annonce d'intégration en base.",
     "Annonce en finale.",
     "Annonce de dégagement de piste et roulage vers le parking."
@@ -191,7 +184,6 @@ const explanations = {
     "Enroute position report (optional).",
     "Arrival announcement.",
     "10 NM inbound announcement.",
-    "Downwind entry announcement.",
     "Base leg announcement.",
     "Final approach announcement.",
     "Runway vacated and taxi to parking announcement."
@@ -212,7 +204,6 @@ const steps = {
     null,
     null,
     null,
-    null,
     null
   ],
   en: [
@@ -225,7 +216,6 @@ const steps = {
     null,
     null,
     "Arrival",
-    null,
     null,
     null,
     null,
@@ -245,7 +235,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">${alt ? alt + " pieds, " : ""}VFR vers ${arr}, trafic ${dep}, ${callsign}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">10 nautiques au ${deg}° du terrain, intégration pour atterrissage piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Intégration vent ${lr === "left" ? "gauche" : "droite"} piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Base piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Finale piste ${rArr}, trafic ${arr}, ${callsign}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Piste dégagée, roulage vers parking${parking ? " " + parking : ""}, trafic ${arr}, ${callsign}.</span>`
@@ -261,7 +250,6 @@ const phrases = {
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">${alt ? alt + " feet, " : ""}VFR to ${arr}, ${dep} traffic, ${callsign}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => "",
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">10 miles ${deg}° of the field, inbound for landing, runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
-    (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Entering ${lr} downwind runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Turning base runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Final runway ${rArr}, ${arr} traffic, ${callsign}.</span>`,
     (dep, arr, rDep, rArr, alt, deg, lr, parking, callsign) => `<span class="phrase">Clear of runway ${rArr}, taxiing to parking${parking ? " at " + parking : ""}, ${arr} traffic, ${callsign}.</span>`
@@ -282,7 +270,6 @@ const stepTitles = {
     null,
     null,
     null,
-    null,
     null
   ],
   en: [
@@ -295,7 +282,6 @@ const stepTitles = {
     null,
     null,
     (arr) => `<div class="step-title" style="color:#111;font-weight:bold;">Arrival – ${arr}</div>`,
-    null,
     null,
     null,
     null,
@@ -360,10 +346,6 @@ function setSiteLang(lang) {
   document.getElementById('degree').placeholder = lang === 'fr' ? "Ex: 045" : "Ex: 045";
   document.getElementById('altitude').placeholder = lang === 'fr' ? "Ex: 3500" : "Ex: 3500";
   document.getElementById('parking').placeholder = lang === 'fr' ? "Ex: G23" : "Ex: G23";
-  // Select options
-  document.querySelectorAll('#leftRight option').forEach(opt => {
-    if (opt.dataset[lang]) opt.textContent = opt.dataset[lang];
-  });
   // Réaffiche les phrases si déjà générées
   if (document.getElementById('output').innerHTML.trim()) {
     generatePhrases();
@@ -391,7 +373,6 @@ function generatePhrases(event) {
   const rArr = document.getElementById("runwayArr").value.trim();
   const alt = document.getElementById("altitude").value.trim();
   const deg = document.getElementById("degree").value.trim();
-  const lr = document.getElementById("leftRight").value;
   const parking = document.getElementById("parking").value.trim();
 
   const phraseList = phrases[commLang];
@@ -406,7 +387,7 @@ function generatePhrases(event) {
       else if (i === 8) html += stepList[i](arrName);
     }
     if (!stepList[i]) {
-      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, lr, parking, callsign)}</details>`;
+      html += `<details><summary>${explainList[i]}</summary>${phraseList[i](depName, arrName, rDep, rArr, alt, deg, null, parking, callsign)}</details>`;
     }
   }
 
@@ -415,7 +396,7 @@ function generatePhrases(event) {
   const facultatifList = facultatifPhrases[commLang];
   const facultatifExplain = facultatifExplanations[siteLang];
   for(let i=0; i<facultatifList.length; i++) {
-    html += `<details><summary>${facultatifExplain[i]}</summary>${facultatifList[i](depName, arrName, rDep, alt, deg, lr, parking, callsign)}</details>`;
+    html += `<details><summary>${facultatifExplain[i]}</summary>${facultatifList[i](depName, arrName, rDep, alt, deg, null, parking, callsign)}</details>`;
   }
 
   document.getElementById("output").innerHTML = html;
