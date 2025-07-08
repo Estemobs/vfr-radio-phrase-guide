@@ -685,7 +685,7 @@ const phrases = {
     },
     // Demande push and start
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
-      return `<span class="phrase">Tour ${dep}, ${callsign || "Victor Juliet Zero Five"}, demande repoussage et démarrage moteurs.</span>`;
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, demande repoussage et démarrage moteurs.</span>`;
     },
     // Push and start facing (nouveau menu déroulant)
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
@@ -751,9 +751,9 @@ const phrases = {
     // Demande cap direct
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
       if (commLang === 'fr') {
-        return `<span class="phrase">Centre, ${callsign || "Victor Juliet Zero Five"}, demande cap <input type="text" id="headingInput" placeholder="360" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">° direct.</span>`;
+        return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, demande cap <input type="text" id="headingInput" placeholder="360" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">° direct.</span>`;
       } else {
-        return `<span class="phrase">Center, ${callsign || "Victor Juliet Zero Five"}, request heading <input type="text" id="headingInput" placeholder="360" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">° direct.</span>`;
+        return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, request heading <input type="text" id="headingInput" placeholder="360" style="display: inline; width: 60px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">° direct.</span>`;
       }
     },
     // Demande cap pour point inconnu (cartes non à jour)
@@ -845,7 +845,7 @@ const phrases = {
     },
     // Push and start request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
-      return `<span class="phrase">${dep} Tower, ${callsign || "Victor Juliet Zero Five"}, ready for push and start.</span>`;
+      return `<span class="phrase">${callsign || "Victor Juliet Zero Five"}, ready for push and start.</span>`;
     },
     // Push and start facing (nouveau menu déroulant)
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus, parkingDep, atisInfo) => {
