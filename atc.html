@@ -743,11 +743,10 @@ const phrases = {
     },
     // Demande changement altitude
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      const altText = formatAltitude(alt, altType, commLang);
       if (commLang === 'fr') {
-        return `<span class="phrase"><input type="text" placeholder="Nom contrôleur" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, demande montée ${altText}.</span>`;
+        return `<span class="phrase"><input type="text" placeholder="Nom contrôleur" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, demande montée <input type="text" placeholder="altitude demandée" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
       } else {
-        return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb ${altText}.</span>`;
+        return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb <input type="text" placeholder="requested altitude" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
       }
     },
     // Demande cap direct
@@ -879,8 +878,7 @@ const phrases = {
     },
     // Altitude change request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
-      const altText = formatAltitude(alt, altType, 'en');
-      return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb ${altText}.</span>`;
+      return `<span class="phrase"><input type="text" placeholder="Controller name" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">, ${callsign || "Victor Juliet Zero Five"}, request climb <input type="text" placeholder="requested altitude" style="display: inline; width: 120px; padding: 2px; margin: 0 2px; font-size: 0.9em; background: white; border: 1px solid #ccc; border-radius: 3px;">.</span>`;
     },
     // Direct heading request
     (dep, arr, rDep, rArr, alt, takeoffHeading, lr, parking, callsign, squawk, altType, flightType, chartsStatus) => {
