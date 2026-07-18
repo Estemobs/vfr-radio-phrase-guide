@@ -112,7 +112,29 @@
     color: #666;
     font-size: 0.9em;
   }
-  
+
+  .lang-switch {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .lang-switch button {
+    background: #e6f0fa;
+    color: #004a99;
+    border: 1px solid #004a99;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .lang-switch button.active {
+    background: #004a99;
+    color: #fff;
+  }
+
   @media (max-width: 600px) {
     h1 {
       font-size: 2em;
@@ -131,45 +153,59 @@
 </head>
 <body>
 
+<div class="lang-switch">
+  <button id="site-fr" class="active" onclick="setSiteLang('fr')" type="button">Français</button>
+  <button id="site-en" onclick="setSiteLang('en')" type="button">English</button>
+</div>
+
 <div class="header">
-  <h1>📻 VFR Radio Phrase Guide</h1>
-  <div class="subtitle">Guide des communications radio pour pilotes VFR</div>
+  <h1>📻 <span data-fr="VFR Radio Phrase Guide" data-en="VFR Radio Phrase Guide">VFR Radio Phrase Guide</span></h1>
+  <div class="subtitle" data-fr="Guide des communications radio pour pilotes VFR" data-en="Radio communications guide for VFR pilots">Guide des communications radio pour pilotes VFR</div>
 </div>
 
 <div class="description">
-  <p><strong>Bienvenue dans votre guide des communications radio VFR !</strong></p>
-  <p>Cet outil vous aide à formuler correctement vos communications radio en vol VFR, que ce soit sur des terrains non contrôlés (UNICOM) ou avec le contrôle aérien (ATC).</p>
-  <p>Choisissez le type de communication que vous souhaitez pratiquer :</p>
+  <p data-fr="<strong>Bienvenue dans votre guide des communications radio VFR !</strong>" data-en="<strong>Welcome to your VFR radio communications guide!</strong>"><strong>Bienvenue dans votre guide des communications radio VFR !</strong></p>
+  <p data-fr="Cet outil vous aide à formuler correctement vos communications radio en vol VFR, que ce soit sur des terrains non contrôlés (UNICOM) ou avec le contrôle aérien (ATC)." data-en="This tool helps you correctly phrase your radio communications during VFR flight, whether at uncontrolled airfields (UNICOM) or with air traffic control (ATC).">Cet outil vous aide à formuler correctement vos communications radio en vol VFR, que ce soit sur des terrains non contrôlés (UNICOM) ou avec le contrôle aérien (ATC).</p>
+  <p data-fr="Choisissez le type de communication que vous souhaitez pratiquer :" data-en="Choose the type of communication you want to practice:">Choisissez le type de communication que vous souhaitez pratiquer :</p>
 </div>
 
 <div class="button-container">
   <a href="unicom.html" class="nav-button unicom-button">
-    <div class="button-title">🛩️ Communications UNICOM</div>
-    <div class="button-description">
+    <div class="button-title" data-fr="🛩️ Communications UNICOM" data-en="🛩️ UNICOM Communications">🛩️ Communications UNICOM</div>
+    <div class="button-description" data-fr="Terrains non contrôlés • Auto-information • Phraséologie standard" data-en="Uncontrolled airfields • Self-announcing • Standard phraseology">
       Terrains non contrôlés • Auto-information • Phraséologie standard
     </div>
   </a>
-  
+
   <a href="atc.html" class="nav-button atc-button">
-    <div class="button-title">🎯 Communications ATC</div>
-    <div class="button-description">
+    <div class="button-title" data-fr="🎯 Communications ATC" data-en="🎯 ATC Communications">🎯 Communications ATC</div>
+    <div class="button-description" data-fr="Contrôle aérien • Tours de contrôle • Approche • Départ" data-en="Air traffic control • Towers • Approach • Departure">
       Contrôle aérien • Tours de contrôle • Approche • Départ
     </div>
   </a>
 </div>
 
 <div class="footer">
-  <p>Guide créé pour la formation des pilotes VFR • Version 1.0</p>
+  <p data-fr="Guide créé pour la formation des pilotes VFR • Version 1.0" data-en="Guide created for VFR pilot training • Version 1.0">Guide créé pour la formation des pilotes VFR • Version 1.0</p>
 </div>
 
 <script>
+function setSiteLang(lang) {
+  document.getElementById('site-fr').classList.toggle('active', lang === 'fr');
+  document.getElementById('site-en').classList.toggle('active', lang === 'en');
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-fr]').forEach(function(el) {
+    el.innerHTML = el.dataset[lang];
+  });
+}
+
 // Animation d'entrée
 document.addEventListener('DOMContentLoaded', function() {
   const buttons = document.querySelectorAll('.nav-button');
   buttons.forEach((button, index) => {
     button.style.opacity = '0';
     button.style.transform = 'translateY(20px)';
-    
+
     setTimeout(() => {
       button.style.transition = 'all 0.6s ease';
       button.style.opacity = '1';
