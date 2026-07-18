@@ -1,11 +1,31 @@
 <p align="center">
-  <b>VFR Radio Phrase Guide (UNICOM)</b>
+  <img src="screenshots/banner.png" alt="VFR Radio Phrase Guide" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://estemobs.github.io/vfr-radio-phrase-guide/"><img alt="Demo en ligne" src="https://img.shields.io/badge/demo-en%20ligne-0066cc?style=for-the-badge"></a>
+  <img alt="Licence" src="https://img.shields.io/badge/licence-MIT-004a99?style=for-the-badge">
+  <img alt="FR%2FEN" src="https://img.shields.io/badge/langues-FR%20%2F%20EN-dc3545?style=for-the-badge">
+</p>
+
+<p align="center">
+  <b>👉 <a href="https://estemobs.github.io/vfr-radio-phrase-guide/">estemobs.github.io/vfr-radio-phrase-guide</a> 👈</b>
 </p>
 
 <p align="center">
   <button onclick="document.getElementById('readme-fr').style.display='block';document.getElementById('readme-en').style.display='none';">🇫🇷 Français</button>
   <button onclick="document.getElementById('readme-fr').style.display='none';document.getElementById('readme-en').style.display='block';">🇬🇧 English</button>
 </p>
+
+## Aperçu / Preview
+
+<table>
+<tr>
+<td align="center" width="33%"><img src="screenshots/home.png" alt="Écran d'accueil"><br><sub>Accueil</sub></td>
+<td align="center" width="33%"><img src="screenshots/unicom.png" alt="Générateur UNICOM"><br><sub>UNICOM</sub></td>
+<td align="center" width="33%"><img src="screenshots/atc.png" alt="Générateur ATC"><br><sub>ATC</sub></td>
+</tr>
+</table>
 
 <div id="readme-fr">
 
@@ -58,6 +78,11 @@ Il permet de générer rapidement les annonces radio types pour chaque phase du 
 - En route : sortie de zone, position
 - Arrivée : 10 NM, vent arrière, base, finale, dégagement piste, roulage parking
 - Facultatif : test radio, changement de destination, remise de gaz, touch & go, arrêt complet, mayday
+
+## Roadmap
+
+- [x] Déploiement en ligne (GitHub Pages)
+- [ ] Mode PWA installable, pour un usage hors-ligne en vol
 
 ## Contribution
 
@@ -132,6 +157,11 @@ It allows you to quickly generate standard radio calls for each flight phase, in
 - Enroute: leaving the area, position report
 - Arrival: 10 NM, downwind, base, final, runway vacated, taxi to parking
 - Optional: radio check, destination change, go-around, touch & go, full stop, mayday
+
+## Roadmap
+
+- [x] Online deployment (GitHub Pages)
+- [ ] Installable PWA mode, for offline use in flight
 
 ## Contributing
 
