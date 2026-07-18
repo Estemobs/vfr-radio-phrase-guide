@@ -13,8 +13,7 @@
 </p>
 
 <p align="center">
-  <button onclick="document.getElementById('readme-fr').style.display='block';document.getElementById('readme-en').style.display='none';">🇫🇷 Français</button>
-  <button onclick="document.getElementById('readme-fr').style.display='none';document.getElementById('readme-en').style.display='block';">🇬🇧 English</button>
+  <a href="#-fr">🇫🇷 Français</a> · <a href="#-en">🇬🇧 English</a>
 </p>
 
 ## Aperçu / Preview
@@ -27,7 +26,7 @@
 </tr>
 </table>
 
-<div id="readme-fr">
+<a id="-fr"></a>
 
 # Guide des phrases radio VFR (UNICOM)
 
@@ -104,9 +103,9 @@ Ce projet est open-source, sous licence MIT.
 **Auteur :**  
 Développé pour aider les pilotes VFR à préparer et standardiser leurs communications radio en auto-info/UNICOM.
 
-</div>
+---
 
-<div id="readme-en" style="display:none">
+<a id="-en"></a>
 
 # VFR Radio Phrase Guide (UNICOM)
 
@@ -182,5 +181,3 @@ This project is open-source, under the MIT license.
 
 **Author:**  
 Developed to help VFR pilots prepare and standardize their radio communications in self-information/UNICOM.
-
-</div>
