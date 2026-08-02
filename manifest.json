@@ -1,0 +1,25 @@
+{
+  "name": "VFR Radio Phrase Guide",
+  "short_name": "VFR Radio",
+  "description": "Générateur interactif de phrases radio VFR pour l'auto-information (UNICOM) et le contrôle aérien (ATC), utilisable hors-ligne.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#004a99",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

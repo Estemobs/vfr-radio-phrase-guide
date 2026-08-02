@@ -81,7 +81,7 @@ Il permet de générer rapidement les annonces radio types pour chaque phase du 
 ## Roadmap
 
 - [x] Déploiement en ligne (GitHub Pages)
-- [ ] Mode PWA installable, pour un usage hors-ligne en vol
+- [x] Mode PWA installable, pour un usage hors-ligne en vol
 
 ## Contribution
 
@@ -160,7 +160,7 @@ It allows you to quickly generate standard radio calls for each flight phase, in
 ## Roadmap
 
 - [x] Online deployment (GitHub Pages)
-- [ ] Installable PWA mode, for offline use in flight
+- [x] Installable PWA mode, for offline use in flight
 
 ## Contributing
 
